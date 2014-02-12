@@ -1,0 +1,29 @@
+{
+  "name": "d3-fakebook",
+  "version": "0.0.0",
+  "homepage": "https://github.com/intridea/d3-fakebook",
+  "authors": [
+    "Mike Tierney <mike.tierney@intridea.com>"
+  ],
+  "description": "A useful collection of scripts to get you working with D3, quickly.",
+  "main": "dist/d3-fakebook.js",
+  "keywords": [
+    "d3",
+    "d3js",
+    "chart",
+    "visualization",
+    "dom",
+    "w3c",
+    "svg",
+    "animation",
+    "canvas"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
