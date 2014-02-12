@@ -8,7 +8,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["d3", "d3js", "chart", "visualization", "dom", "w3c", "svg", "animation", "canvas"],
+  "keywords": [
+    "d3",
+    "d3js",
+    "chart",
+    "visualization",
+    "dom",
+    "w3c",
+    "svg",
+    "animation",
+    "canvas"
+  ],
   "author": "Mike Tierney <mike.tierney@intridea.com> (http://miketierney.com)",
   "contributors": [
     "Mike Tierney <mike.tierney@intridea.com> (http://intridea.com/about/team/mike-tierney)"
@@ -18,5 +28,8 @@
     "type": "git",
     "url": "https://github.com/intridea/d3-fakebook.git"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "d3": "~3.4.1"
+  }
 }
