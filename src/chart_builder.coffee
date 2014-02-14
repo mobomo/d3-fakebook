@@ -1,12 +1,4 @@
-#((name, definition) ->
-  #if (typeof define == 'function') define(definition)
-  #else if (typeof module != 'undefined') module.exports = definition()
-  #else this[name] = definition()
-#) "d3-fakebook", ->
-  #console.log "testing"
-  #return
-
-class Catohp.Utils.ChartBuilder
+class ChartBuilder
   constructor : (opts) ->
     @opts  = opts
     @el    = opts.el

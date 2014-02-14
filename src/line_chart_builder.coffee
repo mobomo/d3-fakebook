@@ -1,7 +1,7 @@
 #= require underscore
-#= require backbone/utils/chart_builder
+#= require chart_builder
 
-class Catohp.Utils.LineChartBuilder extends Catohp.Utils.ChartBuilder
+class LineChartBuilder extends ChartBuilder
   buildChart: ->
     allData = @buildData()
     data  = allData[0]

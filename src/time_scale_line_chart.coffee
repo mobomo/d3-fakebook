@@ -1,6 +1,6 @@
-#= require backbone/utils/line_chart_builder
+#= require line_chart_builder
 
-class Catohp.Utils.TSLineChartBuilder extends Catohp.Utils.LineChartBuilder
+class TimeScaleLineChartBuilder extends LineChartBuilder
   buildChart: ->
     allData        = _.compact @buildData()
     data           = allData[0]

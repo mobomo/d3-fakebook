@@ -1,7 +1,7 @@
 #= require underscore
-#= require backbone/utils/chart_builder
+#= require chart_builder
 
-class Catohp.Utils.BarChartBuilder extends Catohp.Utils.ChartBuilder
+class BarChartBuilder extends ChartBuilder
   buildChart: ->
     data = @buildData()
 
@@ -12,7 +12,7 @@ class Catohp.Utils.BarChartBuilder extends Catohp.Utils.ChartBuilder
     # Don't do any of the data rendering if there's nothing to show
     unless hasData
       @displayNotice 'This dataset cannot be rendered.',
-      'There is insufficient data for this chart.'
+        'There is insufficient data for this chart.'
       return
 
     maxVal = @findMax data
