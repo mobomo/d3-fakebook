@@ -5,6 +5,7 @@ gutil  = require 'gulp-util'
 clean  = require 'gulp-clean'
 coffee = require 'gulp-coffee'
 concat = require 'gulp-concat'
+karma  = require 'gulp-karma'
 lint   = require 'gulp-coffeelint'
 rename = require 'gulp-rename'
 uglify = require 'gulp-uglify'
@@ -12,6 +13,11 @@ uglify = require 'gulp-uglify'
 paths  =
   scripts: ['./src/*.coffee']
   dist: './dist'
+
+testFiles = [
+  'dist/*.js',
+  'test/*_spec.js'
+]
 
 gulp.task 'default', ['coffee', 'watch']
 
@@ -44,3 +50,23 @@ gulp.task 'coffee', ['clean'], ->
 
 gulp.task 'watch', ->
   gulp.watch paths.scripts, ['coffee']
+
+gulp.task 'autotest', ->
+  # pass in a non-existent file to the gulp pipe because the karma plugin
+  # doesn't currently play well with requirejs, and karma is properly
+  # configured in the karma.conf and test/main files.
+  # See: https://github.com/lazd/gulp-karma/issues/7
+  gulp.src('noop')
+    .pipe karma
+      configFile : 'karma.conf.js'
+      action     : 'watch'
+
+gulp.task 'test', ->
+  # pass in a non-existent file to the gulp pipe because the karma plugin
+  # doesn't currently play well with requirejs, and karma is properly
+  # configured in the karma.conf and test/main files.
+  # See: https://github.com/lazd/gulp-karma/issues/7
+  return gulp.src('noop')
+    .pipe karma
+      configFile : 'karma.conf.js'
+      action     : 'run'
