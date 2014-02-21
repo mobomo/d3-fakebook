@@ -14,11 +14,6 @@ paths  =
   scripts: ['./src/*.coffee']
   dist: './dist'
 
-testFiles = [
-  'dist/*.js',
-  'test/*_spec.js'
-]
-
 gulp.task 'default', ['coffee', 'watch']
 
 gulp.task 'lint', ->

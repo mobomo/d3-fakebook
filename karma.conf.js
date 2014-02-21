@@ -7,18 +7,29 @@ module.exports = function(config) {
     // base path, that will be used to resolve files and exclude
     basePath: '',
 
-
     // frameworks to use
     frameworks: ['mocha', 'requirejs'],
 
+    preprocessors: {
+      '**/*.coffee' : ['coffee']
+    },
+
+    plugins: [
+      'karma-coffee-preprocessor',
+      'karma-mocha',
+      'karma-mocha-reporter',
+      'karma-osx-reporter',
+      'karma-phantomjs-launcher',
+      'karma-requirejs'
+    ],
 
     // list of files / patterns to load in the browser
     files: [
-      {pattern: 'node_modules/**/*.js', included: false},
       {pattern: 'bower_components/**/*.js', included: false},
-      {pattern: 'dist/*.js', included: false},
-      {pattern: 'test/**/*_spec.js', included: false},
-      'test/main.js'
+      {pattern: 'node_modules/**/*.js', included: false},
+      'test/main.js',
+      {pattern: 'src/*.coffee', included: false},
+      {pattern: 'test/**/*_spec.coffee', included: false}
     ],
 
 
@@ -26,10 +37,26 @@ module.exports = function(config) {
     exclude: [
     ],
 
+    coffeePreprocessor : {
+      options : {
+        bare : true,
+        sourceMap : true
+      },
+      glob_to_multiple : {
+        expand : true,
+        cwd : '.',
+        src : [
+          'src/**/*.coffee',
+          'test/**/*.coffee',
+        ],
+        dest : '.',
+        ext : '.js'
+      }
+    },
 
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-    reporters: ['dots'],
+    reporters: ['mocha'],
 
 
     // web server port
