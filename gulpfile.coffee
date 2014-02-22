@@ -9,6 +9,7 @@ karma  = require 'gulp-karma'
 lint   = require 'gulp-coffeelint'
 rename = require 'gulp-rename'
 uglify = require 'gulp-uglify'
+rjs    = require 'gulp-requirejs'
 
 paths  =
   scripts: ['./src/*.coffee']
@@ -25,8 +26,12 @@ gulp.task 'clean', ->
   return gulp.src(paths.dist, {read: false}).pipe clean()
 
 gulp.task 'build', ['coffee'], ->
-  return gulp.src(["#{paths.dist}/*.js", "!#{paths.dist}/*.min.js"])
-    .pipe(concat 'd3-fakebook.js')
+  return gulp.src([
+    "#{paths.dist}/*.js",
+    "!#{paths.dist}/*.min.js",
+    "!#{paths.dist}/*-amd.js",
+    "!#{paths.dist}/*-amd.min.js"
+  ]).pipe(concat 'd3-fakebook.js')
     .pipe(gulp.dest './')
     .pipe(rename {suffix: '.min'})
     .pipe(uglify())
@@ -38,6 +43,7 @@ gulp.task 'coffee', ['clean'], ->
     .pipe(lint())
     .pipe(lint.reporter())
     .pipe(coffee())
+    .pipe(rename {suffix: '.min'})
     .pipe(gulp.dest paths.dist)
     .pipe(rename {suffix: '.min'})
     .pipe(uglify())
