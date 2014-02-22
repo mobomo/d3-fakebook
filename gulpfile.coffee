@@ -43,7 +43,6 @@ gulp.task 'coffee', ['clean'], ->
     .pipe(lint())
     .pipe(lint.reporter())
     .pipe(coffee())
-    .pipe(rename {suffix: '.min'})
     .pipe(gulp.dest paths.dist)
     .pipe(rename {suffix: '.min'})
     .pipe(uglify())
@@ -59,7 +58,7 @@ gulp.task 'autotest', ->
   # See: https://github.com/lazd/gulp-karma/issues/7
   gulp.src('noop')
     .pipe karma
-      configFile : 'karma.conf.js'
+      configFile : 'karma.conf.coffee'
       action     : 'watch'
 
 gulp.task 'test', ->
@@ -69,5 +68,5 @@ gulp.task 'test', ->
   # See: https://github.com/lazd/gulp-karma/issues/7
   return gulp.src('noop')
     .pipe karma
-      configFile : 'karma.conf.js'
+      configFile : 'karma.conf.coffee'
       action     : 'run'
