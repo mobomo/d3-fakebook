@@ -9,7 +9,7 @@ module.exports = (config) ->
 
 
     # frameworks to use
-    frameworks: ['mocha', 'chai', 'sinon'],
+    frameworks: ['mocha', 'requirejs', 'chai', 'sinon'],
 
 
     preprocessors: {
@@ -21,17 +21,19 @@ module.exports = (config) ->
       'karma-coffee-preprocessor',
       'karma-mocha',
       'karma-chai',
-      'karma-sinon',
       'karma-mocha-reporter',
-      'karma-phantomjs-launcher'
+      'karma-phantomjs-launcher',
+      'karma-requirejs',
+      'karma-sinon'
     ],
 
 
     # list of files / patterns to load in the browser
     files: [
-      {pattern: 'bower_components/**/*.js'},
-      'src/chart_builder.coffee',
-      'test/chart_builder_spec.coffee'
+      {pattern: 'bower_components/**/*.js', included : false},
+      'test/main.js',
+      {pattern: 'src/**/*.coffee', included : false},
+      {pattern: 'test/**/*.coffee', included : false}
     ],
 
 

@@ -1,6 +1,8 @@
-window.Fakebook or= {}
+'use strict'
 
-class Chart
+window.D3Fakebook = {}
+
+class D3Fakebook.Chart
   constructor : (el, opts={}) ->
     # Must have an element to put the chart in; throw an error if it is missing.
     unless el
@@ -201,5 +203,3 @@ class Chart
           title = @getTitle()
           if title then title else null
         )
-
-Fakebook.Chart = Chart
