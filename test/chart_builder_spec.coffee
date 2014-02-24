@@ -1,10 +1,14 @@
 define [
-  'chai',
-  'd3',
+  'd3'
   'underscore',
-  'src/chart_builder'
-], (chai, d3, _, Chart) ->
+  'chart'
+], (d3, _) ->
   'use strict'
+
+  window.d3 = d3
+  window._  = _
+
+  console.log 'd3', d3
 
   expect  = chai.expect
   assert  = chai.assert
@@ -12,20 +16,20 @@ define [
     data : [1,2,3]
 
   describe 'Chart', ->
-    before(() ->
-      objects.containerNode = document.createElement 'div'
-      objects.chart = new Chart objects.containerNode
-      return objects
+    beforeEach(() ->
+      domNode = document.createElement 'div'
+      objects.containerNode = domNode
+      objects.chart = new D3Fakebook.Chart domNode
     )
 
     describe '#new', ->
       it 'should require a DOM node', ->
-        expect(() -> chart = new Chart)
-          .to.throw Error, 'Fakebook Chart requires a DOM node'
+        expect(() -> chart = new D3Fakebook.Chart)
+          .to.throw Error, 'Fakebook Chart requires a node selector'
 
 
-      it 'should produce an instance of Chart', ->
-        expect(objects.chart).to.be.instanceof Chart
+      it 'should produce an instance of D3Fakebook.Chart', ->
+        expect(objects.chart).to.be.instanceof D3Fakebook.Chart
 
 
       it 'should set margins', ->
@@ -34,14 +38,6 @@ define [
         expect(chart.margin.right).to.a 'number'
         expect(chart.margin.bottom).to.a 'number'
         expect(chart.margin.left).to.a 'number'
-
-
-      it 'should call #createContainer()'#, ->
-        # TODO: Need to get sinon working
-        #chart = objects.chart
-        #spy   = sinon.spy chart, 'createContainer'
-
-        #expect(spy).to.be.called
 
 
       describe 'instance properties', ->
@@ -58,19 +54,19 @@ define [
 
 
         it 'should set a title if one is provided', ->
-          chart = new Chart objects.containerNode,
+          chart = new D3Fakebook.Chart objects.containerNode,
             title : 'Chart title'
 
           expect(chart.title).to.equal 'Chart title'
 
 
         it 'should set an indicator title if one is provided', ->
-          chart = new Chart objects.containerNode,
+          chart = new D3Fakebook.Chart objects.containerNode,
             title          : 'Chart title'
 
           expect(chart.indicatorTitle).to.be.a 'undefined'
 
-          chartWithIndicator = new Chart objects.containerNode,
+          chartWithIndicator = new D3Fakebook.Chart objects.containerNode,
             title          : 'Chart title'
             indicatorTitle : 'Indicator title'
 
@@ -78,7 +74,7 @@ define [
 
 
         it 'should store data to the instance if provided', ->
-          chart = new Chart objects.containerNode,
+          chart = new D3Fakebook.Chart objects.containerNode,
             data : objects.data
 
           expect(chart.data).to.be.a 'array'
@@ -95,7 +91,8 @@ define [
 
       it 'should not return -0 for really tiny negative values', ->
         chart = objects.chart
-        num = chart.formatValues -0.00000234567 # bigger than this will be reduced to -0.02m
+        # bigger than this will be reduced to -0.02m
+        num = chart.formatValues -0.00000234567
         expect(num).to.equal '0'
 
 
@@ -126,14 +123,14 @@ define [
         chartNoTitle = objects.chart
         expect(chartNoTitle.getTitle()).to.be.a 'undefined'
 
-        chart = new Chart objects.containerNode,
+        chart = new D3Fakebook.Chart objects.containerNode,
           title : 'Chart title'
         expect(chart.getTitle()).to.be.a 'string'
         expect(chart.getTitle()).to.equal 'Chart title'
 
-    describe '#createContainer', ->
+    describe '#render', ->
       it 'should put an SVG in the node', ->
         chart = objects.chart
-        chart.createContainer()
+        chart.render()
         svg = d3.select(chart.el).select('svg')
         expect(svg[0][0].tagName).to.equal 'svg'

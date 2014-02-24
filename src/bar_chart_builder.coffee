@@ -1,7 +1,6 @@
-#= require underscore
-#= require chart_builder
+'use strict'
 
-class BarChartBuilder extends ChartBuilder
+class D3Fakebook.BarChartBuilder extends D3Fakebook.Chart
   buildChart: ->
     data = @buildData()
 
@@ -94,8 +93,8 @@ class BarChartBuilder extends ChartBuilder
     ticks = _.extend _ticks, ticks or {}
 
     axis = d3.svg.axis()
-             .scale(scale)
-             .orient(position)
+            .scale(scale)
+            .orient(position)
 
     if plane.match /^y/
       axis.ticks(ticks.count)

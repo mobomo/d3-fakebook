@@ -1,9 +1,11 @@
 define [
-  'chai',
   'd3',
   'underscore',
-  'src/time_scale_line_chart'
-], (chai, d3, _, TimeScaleLineChart) ->
+  'time_scale_chart'
+], (d3, _) ->
+  window.d3 = d3
+  window._ = _
+
   'use strict'
 
   expect = chai.expect
@@ -45,39 +47,39 @@ define [
 
     describe '#buildData', ->
       it 'should build the data'
-      before(() ->
-        node = document.createElement 'div'
-        chart = new LineChart node,
-          data : [{
-            country : "United Arab Emirates"
-            data    : [{
-                country : "United Arab Emirates"
-                value   : 1.860001221
-                year    : 1990
-              }, {
-                country : "United Arab Emirates"
-                value   : 2.25
-                year    : 1991
-              }, {
-                country : "United Arab Emirates"
-                value   : 2.43
-                year    : 1992
-              }, {
-                country : "United Arab Emirates"
-                value   : 3.330002441
-                year    : 1993
-              }, {
-                country : "United Arab Emirates"
-                value   : 1.860001221
-                year    : 1994
-              }, {
-                country : "United Arab Emirates"
-                value   : 1.860001221
-                year    : 1995
-              }, {
-              }
-            ]
-          },
-          {
-          }]
-      )
+      #before(() ->
+        #node = document.createElement 'div'
+        #chart = new TimeScaleLineChart node,
+          #data : [{
+            #country : "United Arab Emirates"
+            #data    : [{
+                #country : "United Arab Emirates"
+                #value   : 1.860001221
+                #year    : 1990
+              #}, {
+                #country : "United Arab Emirates"
+                #value   : 2.25
+                #year    : 1991
+              #}, {
+                #country : "United Arab Emirates"
+                #value   : 2.43
+                #year    : 1992
+              #}, {
+                #country : "United Arab Emirates"
+                #value   : 3.330002441
+                #year    : 1993
+              #}, {
+                #country : "United Arab Emirates"
+                #value   : 1.860001221
+                #year    : 1994
+              #}, {
+                #country : "United Arab Emirates"
+                #value   : 1.860001221
+                #year    : 1995
+              #}, {
+              #}
+            #]
+          #},
+          #{
+          #}]
+      #)

@@ -1,9 +1,8 @@
 define [
-  'chai',
   'd3',
   'underscore',
-  'src/line_chart_builder'
-], (chai, d3, _, LineChart) ->
+  'line_chart'
+], (d3, _) ->
   'use strict'
 
   expect = chai.expect

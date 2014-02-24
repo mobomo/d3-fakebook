@@ -1,15 +1,14 @@
 'use strict'
 
-gulp   = require 'gulp'
-gutil  = require 'gulp-util'
-clean  = require 'gulp-clean'
-coffee = require 'gulp-coffee'
-concat = require 'gulp-concat'
-karma  = require 'gulp-karma'
-lint   = require 'gulp-coffeelint'
-rename = require 'gulp-rename'
-uglify = require 'gulp-uglify'
-rjs    = require 'gulp-requirejs'
+gulp         = require 'gulp'
+gutil        = require 'gulp-util'
+clean        = require 'gulp-clean'
+coffee       = require 'gulp-coffee'
+concat       = require 'gulp-concat'
+karma        = require 'gulp-karma'
+lint         = require 'gulp-coffeelint'
+rename       = require 'gulp-rename'
+uglify       = require 'gulp-uglify'
 
 paths  =
   scripts: ['./src/*.coffee']
@@ -25,28 +24,22 @@ gulp.task 'lint', ->
 gulp.task 'clean', ->
   return gulp.src(paths.dist, {read: false}).pipe clean()
 
-gulp.task 'build', ['coffee'], ->
-  return gulp.src([
-    "#{paths.dist}/*.js",
-    "!#{paths.dist}/*.min.js",
-    "!#{paths.dist}/*-amd.js",
-    "!#{paths.dist}/*-amd.min.js"
-  ]).pipe(concat 'd3-fakebook.js')
-    .pipe(gulp.dest './')
-    .pipe(rename {suffix: '.min'})
-    .pipe(uglify())
-    .pipe(gulp.dest './')
+gulp.task 'build', ['coffee']
 
 gulp.task 'coffee', ['clean'], ->
   # Minify and package up all JS files
-  return gulp.src(paths.scripts)
+  return gulp.src(['./src/chart_builder.coffee', './src/*.coffee'])
     .pipe(lint())
     .pipe(lint.reporter())
-    .pipe(coffee())
-    .pipe(rename {suffix: '.min'})
+    .pipe(concat('d3-fakebook.coffee'))
+    .pipe(coffee().on('error', gutil.log))
     .pipe(gulp.dest paths.dist)
     .pipe(rename {suffix: '.min'})
     .pipe(uglify())
+    .pipe(gulp.dest paths.dist)
+
+gulp.task 'copy-build-file', ->
+  return gulp.src('./src/build.js')
     .pipe(gulp.dest paths.dist)
 
 gulp.task 'watch', ->
@@ -59,7 +52,7 @@ gulp.task 'autotest', ->
   # See: https://github.com/lazd/gulp-karma/issues/7
   gulp.src('noop')
     .pipe karma
-      configFile : 'karma.conf.js'
+      configFile : 'karma.conf.coffee'
       action     : 'watch'
 
 gulp.task 'test', ->
@@ -69,5 +62,5 @@ gulp.task 'test', ->
   # See: https://github.com/lazd/gulp-karma/issues/7
   return gulp.src('noop')
     .pipe karma
-      configFile : 'karma.conf.js'
+      configFile : 'karma.conf.coffee'
       action     : 'run'
