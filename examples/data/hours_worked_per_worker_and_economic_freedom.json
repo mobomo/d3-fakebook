@@ -1,0 +1,1190 @@
+[
+  {
+    "country": "World",
+    "data": [
+      {
+        "country": "World",
+        "value": 2069.365724,
+        "date": 1970
+      },
+      {
+        "country": "World",
+        "value": 2056.201196,
+        "date": 1971
+      },
+      {
+        "country": "World",
+        "value": 2044.179601,
+        "date": 1972
+      },
+      {
+        "country": "World",
+        "value": 2030.892429,
+        "date": 1973
+      },
+      {
+        "country": "World",
+        "value": 2011.4381,
+        "date": 1974
+      },
+      {
+        "country": "World",
+        "value": 1994.809801,
+        "date": 1975
+      },
+      {
+        "country": "World",
+        "value": 1990.265859,
+        "date": 1976
+      },
+      {
+        "country": "World",
+        "value": 1976.444531,
+        "date": 1977
+      },
+      {
+        "country": "World",
+        "value": 1967.390175,
+        "date": 1978
+      },
+      {
+        "country": "World",
+        "value": 1958.894113,
+        "date": 1979
+      },
+      {
+        "country": "World",
+        "value": 1952.470812,
+        "date": 1980
+      },
+      {
+        "country": "World",
+        "value": 1938.771742,
+        "date": 1981
+      },
+      {
+        "country": "World",
+        "value": 1930.536197,
+        "date": 1982
+      },
+      {
+        "country": "World",
+        "value": 1922.652966,
+        "date": 1983
+      },
+      {
+        "country": "World",
+        "value": 1910.851444,
+        "date": 1984
+      },
+      {
+        "country": "World",
+        "value": 1905.300191,
+        "date": 1985
+      },
+      {
+        "country": "World",
+        "value": 1896.316398,
+        "date": 1986
+      },
+      {
+        "country": "World",
+        "value": 1895.46429,
+        "date": 1987
+      },
+      {
+        "country": "World",
+        "value": 1893.679906,
+        "date": 1988
+      },
+      {
+        "country": "World",
+        "value": 1875.5588,
+        "date": 1989
+      },
+      {
+        "country": "World",
+        "value": 1863.746388,
+        "date": 1990
+      },
+      {
+        "country": "World",
+        "value": 1848.227166,
+        "date": 1991
+      },
+      {
+        "country": "World",
+        "value": 1843.435285,
+        "date": 1992
+      },
+      {
+        "country": "World",
+        "value": 1848.033271,
+        "date": 1993
+      },
+      {
+        "country": "World",
+        "value": 1855.841037,
+        "date": 1994
+      },
+      {
+        "country": "World",
+        "value": 1857.472657,
+        "date": 1995
+      },
+      {
+        "country": "World",
+        "value": 1858.302293,
+        "date": 1996
+      },
+      {
+        "country": "World",
+        "value": 1857.925729,
+        "date": 1997
+      },
+      {
+        "country": "World",
+        "value": 1845.520315,
+        "date": 1998
+      },
+      {
+        "country": "World",
+        "value": 1857.356202,
+        "date": 1999
+      },
+      {
+        "country": "World",
+        "value": 1860.098771,
+        "date": 2000
+      },
+      {
+        "country": "World",
+        "value": 1844.87129,
+        "date": 2001
+      },
+      {
+        "country": "World",
+        "value": 1839.99632,
+        "date": 2002
+      },
+      {
+        "country": "World",
+        "value": 1830.487258,
+        "date": 2003
+      },
+      {
+        "country": "World",
+        "value": 1833.829459,
+        "date": 2004
+      },
+      {
+        "country": "World",
+        "value": 1833.453722,
+        "date": 2005
+      },
+      {
+        "country": "World",
+        "value": 1826.698309,
+        "date": 2006
+      },
+      {
+        "country": "World",
+        "value": 1824.090564,
+        "date": 2007
+      },
+      {
+        "country": "World",
+        "value": 1816.657366,
+        "date": 2008
+      },
+      {
+        "country": "World",
+        "value": 1792.372571,
+        "date": 2009
+      },
+      {
+        "country": "World",
+        "value": 1798.439378,
+        "date": 2010
+      }
+    ],
+    "dataComparison": [
+      {
+        "country": "World",
+        "value": 5.885182973,
+        "date": 1970
+      },
+      {
+        "country": "World",
+        "value": 5.312697057,
+        "date": 1975
+      },
+      {
+        "country": "World",
+        "value": 5.301829238,
+        "date": 1980
+      },
+      {
+        "country": "World",
+        "value": 5.349028371,
+        "date": 1985
+      },
+      {
+        "country": "World",
+        "value": 5.657407847,
+        "date": 1990
+      },
+      {
+        "country": "World",
+        "value": 6.121083014,
+        "date": 1995
+      },
+      {
+        "country": "World",
+        "value": 6.592764228,
+        "date": 2000
+      },
+      {
+        "country": "World",
+        "value": 6.524224107,
+        "date": 2001
+      },
+      {
+        "country": "World",
+        "value": 6.598665862,
+        "date": 2002
+      },
+      {
+        "country": "World",
+        "value": 6.672128552,
+        "date": 2003
+      },
+      {
+        "country": "World",
+        "value": 6.643464403,
+        "date": 2004
+      },
+      {
+        "country": "World",
+        "value": 6.784234967,
+        "date": 2005
+      },
+      {
+        "country": "World",
+        "value": 6.828418524,
+        "date": 2006
+      },
+      {
+        "country": "World",
+        "value": 6.863433814,
+        "date": 2007
+      },
+      {
+        "country": "World",
+        "value": 6.796605531,
+        "date": 2008
+      },
+      {
+        "country": "World",
+        "value": 6.791495178,
+        "date": 2009
+      },
+      {
+        "country": "World",
+        "value": 6.831827969,
+        "date": 2010
+      }
+    ]
+  },
+  {
+    "country": "Argentina",
+    "data": [
+      {
+        "country": "Argentina",
+        "value": 2006,
+        "date": 1970
+      },
+      {
+        "country": "Argentina",
+        "value": 2002.66111,
+        "date": 1971
+      },
+      {
+        "country": "Argentina",
+        "value": 1999.32778,
+        "date": 1972
+      },
+      {
+        "country": "Argentina",
+        "value": 1996,
+        "date": 1973
+      },
+      {
+        "country": "Argentina",
+        "value": 1992.84219,
+        "date": 1974
+      },
+      {
+        "country": "Argentina",
+        "value": 1989.68938,
+        "date": 1975
+      },
+      {
+        "country": "Argentina",
+        "value": 1986.54156,
+        "date": 1976
+      },
+      {
+        "country": "Argentina",
+        "value": 1983.39872,
+        "date": 1977
+      },
+      {
+        "country": "Argentina",
+        "value": 1980.26085,
+        "date": 1978
+      },
+      {
+        "country": "Argentina",
+        "value": 1977.12795,
+        "date": 1979
+      },
+      {
+        "country": "Argentina",
+        "value": 1974,
+        "date": 1980
+      },
+      {
+        "country": "Argentina",
+        "value": 1961.23006,
+        "date": 1981
+      },
+      {
+        "country": "Argentina",
+        "value": 1948.54272,
+        "date": 1982
+      },
+      {
+        "country": "Argentina",
+        "value": 1935.93747,
+        "date": 1983
+      },
+      {
+        "country": "Argentina",
+        "value": 1923.41375,
+        "date": 1984
+      },
+      {
+        "country": "Argentina",
+        "value": 1910.97105,
+        "date": 1985
+      },
+      {
+        "country": "Argentina",
+        "value": 1898.60885,
+        "date": 1986
+      },
+      {
+        "country": "Argentina",
+        "value": 1886.32662,
+        "date": 1987
+      },
+      {
+        "country": "Argentina",
+        "value": 1874.12384,
+        "date": 1988
+      },
+      {
+        "country": "Argentina",
+        "value": 1862,
+        "date": 1989
+      },
+      {
+        "country": "Argentina",
+        "value": 1850,
+        "date": 1990
+      },
+      {
+        "country": "Argentina",
+        "value": 1856.21858,
+        "date": 1991
+      },
+      {
+        "country": "Argentina",
+        "value": 1862.45805,
+        "date": 1992
+      },
+      {
+        "country": "Argentina",
+        "value": 1868.71851,
+        "date": 1993
+      },
+      {
+        "country": "Argentina",
+        "value": 1875,
+        "date": 1994
+      },
+      {
+        "country": "Argentina",
+        "value": 1881.96114,
+        "date": 1995
+      },
+      {
+        "country": "Argentina",
+        "value": 1888.94812,
+        "date": 1996
+      },
+      {
+        "country": "Argentina",
+        "value": 1895.96104,
+        "date": 1997
+      },
+      {
+        "country": "Argentina",
+        "value": 1903,
+        "date": 1998
+      },
+      {
+        "country": "Argentina",
+        "value": 1898.5641,
+        "date": 1999
+      },
+      {
+        "country": "Argentina",
+        "value": 1871.94872,
+        "date": 2000
+      },
+      {
+        "country": "Argentina",
+        "value": 1836.46154,
+        "date": 2001
+      },
+      {
+        "country": "Argentina",
+        "value": 1738.8718,
+        "date": 2002
+      },
+      {
+        "country": "Argentina",
+        "value": 1774.35897,
+        "date": 2003
+      },
+      {
+        "country": "Argentina",
+        "value": 1805.41026,
+        "date": 2004
+      },
+      {
+        "country": "Argentina",
+        "value": 1840.89744,
+        "date": 2005
+      },
+      {
+        "country": "Argentina",
+        "value": 1840.89744,
+        "date": 2006
+      },
+      {
+        "country": "Argentina",
+        "value": 1840.89744,
+        "date": 2007
+      },
+      {
+        "country": "Argentina",
+        "value": 1840.89744,
+        "date": 2008
+      },
+      {
+        "country": "Argentina",
+        "value": 1840.89744,
+        "date": 2009
+      },
+      {
+        "country": "Argentina",
+        "value": 1840.89744,
+        "date": 2010
+      }
+    ],
+    "dataComparison": [
+      {
+        "country": "Argentina",
+        "value": 4.360001065,
+        "date": 1970
+      },
+      {
+        "country": "Argentina",
+        "value": 2.759301381,
+        "date": 1975
+      },
+      {
+        "country": "Argentina",
+        "value": 3.959378498,
+        "date": 1980
+      },
+      {
+        "country": "Argentina",
+        "value": 3.296412806,
+        "date": 1985
+      },
+      {
+        "country": "Argentina",
+        "value": 4.419771369,
+        "date": 1990
+      },
+      {
+        "country": "Argentina",
+        "value": 7.03853459,
+        "date": 1995
+      },
+      {
+        "country": "Argentina",
+        "value": 7.400004883,
+        "date": 2000
+      },
+      {
+        "country": "Argentina",
+        "value": 6.73,
+        "date": 2001
+      },
+      {
+        "country": "Argentina",
+        "value": 6.23,
+        "date": 2002
+      },
+      {
+        "country": "Argentina",
+        "value": 6.089774919,
+        "date": 2003
+      },
+      {
+        "country": "Argentina",
+        "value": 6.227954577,
+        "date": 2004
+      },
+      {
+        "country": "Argentina",
+        "value": 5.970519253,
+        "date": 2005
+      },
+      {
+        "country": "Argentina",
+        "value": 6.090128987,
+        "date": 2006
+      },
+      {
+        "country": "Argentina",
+        "value": 6.299446023,
+        "date": 2007
+      },
+      {
+        "country": "Argentina",
+        "value": 6.070194031,
+        "date": 2008
+      },
+      {
+        "country": "Argentina",
+        "value": 5.950584296,
+        "date": 2009
+      },
+      {
+        "country": "Argentina",
+        "value": 5.79110465,
+        "date": 2010
+      }
+    ]
+  },
+  {
+    "country": "Australia",
+    "data": [
+      {
+        "country": "Australia",
+        "value": 1824.45231,
+        "date": 1970
+      },
+      {
+        "country": "Australia",
+        "value": 1820.63506,
+        "date": 1971
+      },
+      {
+        "country": "Australia",
+        "value": 1817.02122,
+        "date": 1972
+      },
+      {
+        "country": "Australia",
+        "value": 1813.37757,
+        "date": 1973
+      },
+      {
+        "country": "Australia",
+        "value": 1809.74888,
+        "date": 1974
+      },
+      {
+        "country": "Australia",
+        "value": 1806.12315,
+        "date": 1975
+      },
+      {
+        "country": "Australia",
+        "value": 1802.54906,
+        "date": 1976
+      },
+      {
+        "country": "Australia",
+        "value": 1798.69748,
+        "date": 1977
+      },
+      {
+        "country": "Australia",
+        "value": 1796.4952,
+        "date": 1978
+      },
+      {
+        "country": "Australia",
+        "value": 1816.66746,
+        "date": 1979
+      },
+      {
+        "country": "Australia",
+        "value": 1814.77784,
+        "date": 1980
+      },
+      {
+        "country": "Australia",
+        "value": 1814.77784,
+        "date": 1981
+      },
+      {
+        "country": "Australia",
+        "value": 1804.14815,
+        "date": 1982
+      },
+      {
+        "country": "Australia",
+        "value": 1789.65312,
+        "date": 1983
+      },
+      {
+        "country": "Australia",
+        "value": 1805.11449,
+        "date": 1984
+      },
+      {
+        "country": "Australia",
+        "value": 1795.45114,
+        "date": 1985
+      },
+      {
+        "country": "Australia",
+        "value": 1779.02343,
+        "date": 1986
+      },
+      {
+        "country": "Australia",
+        "value": 1795.45114,
+        "date": 1987
+      },
+      {
+        "country": "Australia",
+        "value": 1814.77784,
+        "date": 1988
+      },
+      {
+        "country": "Australia",
+        "value": 1809.94617,
+        "date": 1989
+      },
+      {
+        "country": "Australia",
+        "value": 1806.08082,
+        "date": 1990
+      },
+      {
+        "country": "Australia",
+        "value": 1795.45114,
+        "date": 1991
+      },
+      {
+        "country": "Australia",
+        "value": 1787.72045,
+        "date": 1992
+      },
+      {
+        "country": "Australia",
+        "value": 1810.9125,
+        "date": 1993
+      },
+      {
+        "country": "Australia",
+        "value": 1815.74418,
+        "date": 1994
+      },
+      {
+        "country": "Australia",
+        "value": 1812.84517,
+        "date": 1995
+      },
+      {
+        "country": "Australia",
+        "value": 1804.14815,
+        "date": 1996
+      },
+      {
+        "country": "Australia",
+        "value": 1803.18182,
+        "date": 1997
+      },
+      {
+        "country": "Australia",
+        "value": 1797.38381,
+        "date": 1998
+      },
+      {
+        "country": "Australia",
+        "value": 1792.50668,
+        "date": 1999
+      },
+      {
+        "country": "Australia",
+        "value": 1794.63823,
+        "date": 2000
+      },
+      {
+        "country": "Australia",
+        "value": 1744.87912,
+        "date": 2001
+      },
+      {
+        "country": "Australia",
+        "value": 1750.53453,
+        "date": 2002
+      },
+      {
+        "country": "Australia",
+        "value": 1758.58528,
+        "date": 2003
+      },
+      {
+        "country": "Australia",
+        "value": 1739.3753,
+        "date": 2004
+      },
+      {
+        "country": "Australia",
+        "value": 1734.75571,
+        "date": 2005
+      },
+      {
+        "country": "Australia",
+        "value": 1726.72164,
+        "date": 2006
+      },
+      {
+        "country": "Australia",
+        "value": 1718.788,
+        "date": 2007
+      },
+      {
+        "country": "Australia",
+        "value": 1724.51227,
+        "date": 2008
+      },
+      {
+        "country": "Australia",
+        "value": 1697.19645,
+        "date": 2009
+      },
+      {
+        "country": "Australia",
+        "value": 1693.07899,
+        "date": 2010
+      }
+    ],
+    "dataComparison": [
+      {
+        "country": "Australia",
+        "value": 6.96071129,
+        "date": 1970
+      },
+      {
+        "country": "Australia",
+        "value": 6.066767137,
+        "date": 1975
+      },
+      {
+        "country": "Australia",
+        "value": 6.857649332,
+        "date": 1980
+      },
+      {
+        "country": "Australia",
+        "value": 7.167995516,
+        "date": 1985
+      },
+      {
+        "country": "Australia",
+        "value": 7.568442203,
+        "date": 1990
+      },
+      {
+        "country": "Australia",
+        "value": 7.979664169,
+        "date": 1995
+      },
+      {
+        "country": "Australia",
+        "value": 8.070004883,
+        "date": 2000
+      },
+      {
+        "country": "Australia",
+        "value": 7.93,
+        "date": 2001
+      },
+      {
+        "country": "Australia",
+        "value": 7.97,
+        "date": 2002
+      },
+      {
+        "country": "Australia",
+        "value": 8.111240506,
+        "date": 2003
+      },
+      {
+        "country": "Australia",
+        "value": 8.020443038,
+        "date": 2004
+      },
+      {
+        "country": "Australia",
+        "value": 8.242113574,
+        "date": 2005
+      },
+      {
+        "country": "Australia",
+        "value": 8.282966677,
+        "date": 2006
+      },
+      {
+        "country": "Australia",
+        "value": 8.32381978,
+        "date": 2007
+      },
+      {
+        "country": "Australia",
+        "value": 8.221687022,
+        "date": 2008
+      },
+      {
+        "country": "Australia",
+        "value": 8.20126047,
+        "date": 2009
+      },
+      {
+        "country": "Australia",
+        "value": 8.191047194,
+        "date": 2010
+      }
+    ]
+  },
+  {
+    "country": "Austria",
+    "data": [
+      {
+        "country": "Austria",
+        "value": 2210.74474,
+        "date": 1970
+      },
+      {
+        "country": "Austria",
+        "value": 2195.01068,
+        "date": 1971
+      },
+      {
+        "country": "Austria",
+        "value": 2179.3886,
+        "date": 1972
+      },
+      {
+        "country": "Austria",
+        "value": 2163.87771,
+        "date": 1973
+      },
+      {
+        "country": "Austria",
+        "value": 2139.25276,
+        "date": 1974
+      },
+      {
+        "country": "Austria",
+        "value": 2114.90805,
+        "date": 1975
+      },
+      {
+        "country": "Austria",
+        "value": 2090.84038,
+        "date": 1976
+      },
+      {
+        "country": "Austria",
+        "value": 2067.0466,
+        "date": 1977
+      },
+      {
+        "country": "Austria",
+        "value": 2043.52359,
+        "date": 1978
+      },
+      {
+        "country": "Austria",
+        "value": 2020.26828,
+        "date": 1979
+      },
+      {
+        "country": "Austria",
+        "value": 2010.20625,
+        "date": 1980
+      },
+      {
+        "country": "Austria",
+        "value": 2000.19434,
+        "date": 1981
+      },
+      {
+        "country": "Austria",
+        "value": 1990.2323,
+        "date": 1982
+      },
+      {
+        "country": "Austria",
+        "value": 1980.31987,
+        "date": 1983
+      },
+      {
+        "country": "Austria",
+        "value": 1970.45681,
+        "date": 1984
+      },
+      {
+        "country": "Austria",
+        "value": 1960.64287,
+        "date": 1985
+      },
+      {
+        "country": "Austria",
+        "value": 1950.87781,
+        "date": 1986
+      },
+      {
+        "country": "Austria",
+        "value": 1941.16139,
+        "date": 1987
+      },
+      {
+        "country": "Austria",
+        "value": 1936.51448,
+        "date": 1988
+      },
+      {
+        "country": "Austria",
+        "value": 1931.8787,
+        "date": 1989
+      },
+      {
+        "country": "Austria",
+        "value": 1927.25402,
+        "date": 1990
+      },
+      {
+        "country": "Austria",
+        "value": 1922.6404,
+        "date": 1991
+      },
+      {
+        "country": "Austria",
+        "value": 1918.03783,
+        "date": 1992
+      },
+      {
+        "country": "Austria",
+        "value": 1891.39004,
+        "date": 1993
+      },
+      {
+        "country": "Austria",
+        "value": 1864.18496,
+        "date": 1994
+      },
+      {
+        "country": "Austria",
+        "value": 1787.75564,
+        "date": 1995
+      },
+      {
+        "country": "Austria",
+        "value": 1819.14335,
+        "date": 1996
+      },
+      {
+        "country": "Austria",
+        "value": 1826.94373,
+        "date": 1997
+      },
+      {
+        "country": "Austria",
+        "value": 1805.03281,
+        "date": 1998
+      },
+      {
+        "country": "Austria",
+        "value": 1805.06705,
+        "date": 1999
+      },
+      {
+        "country": "Austria",
+        "value": 1799.55754,
+        "date": 2000
+      },
+      {
+        "country": "Austria",
+        "value": 1787.25227,
+        "date": 2001
+      },
+      {
+        "country": "Austria",
+        "value": 1784.85489,
+        "date": 2002
+      },
+      {
+        "country": "Austria",
+        "value": 1776.23725,
+        "date": 2003
+      },
+      {
+        "country": "Austria",
+        "value": 1781.95156,
+        "date": 2004
+      },
+      {
+        "country": "Austria",
+        "value": 1764.2698,
+        "date": 2005
+      },
+      {
+        "country": "Austria",
+        "value": 1740.7958,
+        "date": 2006
+      },
+      {
+        "country": "Austria",
+        "value": 1735.57155,
+        "date": 2007
+      },
+      {
+        "country": "Austria",
+        "value": 1718.4511,
+        "date": 2008
+      },
+      {
+        "country": "Austria",
+        "value": 1674.50601,
+        "date": 2009
+      },
+      {
+        "country": "Austria",
+        "value": 1663.48399,
+        "date": 2010
+      }
+    ],
+    "dataComparison": [
+      {
+        "country": "Austria",
+        "value": 6.077431315,
+        "date": 1970
+      },
+      {
+        "country": "Austria",
+        "value": 5.928062813,
+        "date": 1975
+      },
+      {
+        "country": "Austria",
+        "value": 6.330464437,
+        "date": 1980
+      },
+      {
+        "country": "Austria",
+        "value": 6.34027912,
+        "date": 1985
+      },
+      {
+        "country": "Austria",
+        "value": 6.978232912,
+        "date": 1990
+      },
+      {
+        "country": "Austria",
+        "value": 7.158964134,
+        "date": 1995
+      },
+      {
+        "country": "Austria",
+        "value": 7.550004883,
+        "date": 2000
+      },
+      {
+        "country": "Austria",
+        "value": 7.38,
+        "date": 2001
+      },
+      {
+        "country": "Austria",
+        "value": 7.4,
+        "date": 2002
+      },
+      {
+        "country": "Austria",
+        "value": 7.96075778,
+        "date": 2003
+      },
+      {
+        "country": "Austria",
+        "value": 7.860369914,
+        "date": 2004
+      },
+      {
+        "country": "Austria",
+        "value": 7.84031795,
+        "date": 2005
+      },
+      {
+        "country": "Austria",
+        "value": 7.810354951,
+        "date": 2006
+      },
+      {
+        "country": "Austria",
+        "value": 7.790379619,
+        "date": 2007
+      },
+      {
+        "country": "Austria",
+        "value": 7.680515291,
+        "date": 2008
+      },
+      {
+        "country": "Austria",
+        "value": 7.620589294,
+        "date": 2009
+      },
+      {
+        "country": "Austria",
+        "value": 7.610601628,
+        "date": 2010
+      }
+    ]
+  }
+]

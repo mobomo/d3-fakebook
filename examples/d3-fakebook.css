@@ -1,0 +1,60 @@
+/* Layout
+ * -------------------------
+ */
+
+.chart {
+  height: 500px;
+}
+
+/* Text
+ * -------------------------
+ */
+
+.chart .chart-title {
+  font-weight: bold;
+  font-size: 10pt;
+}
+
+.chart .chart-label {
+  font-weight: bold;
+}
+
+.chart text {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 9pt;
+  fill: #4f4f4f;
+}
+
+
+/* Elements
+ * -------------------------
+ */
+
+.chart > svg {
+  background-color: #fff;
+  border: 1px solid #e4e7e0;
+}
+
+.chart path {
+  fill: none;
+  stroke-width: 4;
+}
+
+.chart .tick line {
+  stroke: #d7d7d3;
+  z-index: -99;
+}
+
+.chart .tick.minor line {
+  stroke: #f4f4f3;
+}
+
+.chart .x.axis .domain {
+  stroke: #d7d7d3;
+  stroke-width: 1;
+}
+
+/* Disable the display of tick lines on the secondary axis, if present */
+.chart .y.axis.comparison .tick line {
+  stroke: transparent;
+}

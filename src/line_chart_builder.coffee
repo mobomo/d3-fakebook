@@ -1,6 +1,10 @@
 'use strict'
 
 class D3Fakebook.LineChart extends D3Fakebook.Chart
+  render : ->
+    @createContainer()
+    @buildChart()
+
   buildChart: ->
     allData = @buildData()
     data  = allData[0]
@@ -23,16 +27,13 @@ class D3Fakebook.LineChart extends D3Fakebook.Chart
     @xAxis = @createAxis 'x', @x, 'bottom'
 
     @yAxisLeft = @createAxis 'y0', @y0, 'left',
-      size :
-        major : 0 - @innerWidth
-        minor : 0 - @innerWidth
-        end   : 0 - @innerWidth
+      size : 0 - @innerWidth
 
     @yAxisRight = @createAxis 'y1', @y1, 'right'
 
-    countries = @setCountries @color, data
+    datasets = @setDatasets @color, data
     if dataComparison
-      countriesComparison = @setCountries @colorAlt, dataComparison
+      datasetsComparison = @setDatasets @colorAlt, dataComparison
 
     xValues  = []
     y0Values = []
@@ -53,20 +54,10 @@ class D3Fakebook.LineChart extends D3Fakebook.Chart
     @setDomain @y0, @findMin(y0Values), @findMax(y0Values)
     @setDomain @y1, @findMin(y1Values), @findMax(y1Values) if dataComparison
 
-    # NOTE: timer is necessary to ensure that the nodes are in the DOM when
-    # this event listener is initialized
-    setTimeout ->
-      $('.data-point').popover
-        container : 'body'
-        html      : true
-        trigger   : 'manual'
-        placement : 'top'
-      , 10
-
-    @drawChart countries, countriesComparison
+    @drawChart datasets, datasetsComparison
 
 
-  setCountries : (scale, data) ->
+  setDatasets : (scale, data) ->
     scale.domain().map (name) ->
       name   : name
       values : data[name]
@@ -80,7 +71,6 @@ class D3Fakebook.LineChart extends D3Fakebook.Chart
   createAxis : (plane, scale, position, ticks) ->
     _ticks =
       count     : 10
-      subdivide : true
       padding   : 10
       size      : null
 
@@ -99,8 +89,8 @@ class D3Fakebook.LineChart extends D3Fakebook.Chart
         .scale(scale)
         .orient(position)
         .ticks(ticks.count)
-        .innerTickSize([ticks.size])
-        .outerTickSize([ticks.size])
+        .innerTickSize(ticks.size)
+        .outerTickSize(ticks.size)
         .tickPadding(ticks.padding)
 
       @setTickFormat(axis)
@@ -123,17 +113,17 @@ class D3Fakebook.LineChart extends D3Fakebook.Chart
             .x((d) -> x d[0])
             .y((d) -> y d[1])
 
-    lines = @svg.selectAll('.countries')
+    lines = @svg.selectAll('.datasets')
                 .data(dataset)
 
-    country = lines.enter()
+    series = lines.enter()
                   .append('g')
-                  .attr('class', 'country')
+                  .attr('class', 'series')
 
     legendAttr      = "data-legend#{'-comparison' if isComparison}"
     legendColorAttr = 'data-legend-color'
 
-    country.append('path')
+    series.append('path')
           .attr('class', 'line')
           .attr('d', (d) -> line(d.values))
           .attr(legendAttr, (d) -> d.name)
@@ -147,7 +137,7 @@ class D3Fakebook.LineChart extends D3Fakebook.Chart
     pointOpacity = 0.4
 
     pointsGroup = @svg.append('g')
-    points = country.selectAll('.data-point').data (d) ->
+    points = series.selectAll('.data-point').data (d) ->
       filtered = _.filter(d.values, (data) ->
         not _.isNaN(data[0]) and not _.isNaN(data[1]))
       _(filtered).each (f) -> f.push d.name
@@ -170,18 +160,12 @@ class D3Fakebook.LineChart extends D3Fakebook.Chart
             Y: #{@utils.round2(d[1])}")
           .style('fill', (d,i) -> color d[2])
           .on('mouseover', (d) ->
-            $node = $(this)
-            $node.popover('show')
-
             d3.select(this)
               .transition()
               .duration(250)
               .style('opacity', 1)
           )
           .on('mouseout', (d) ->
-            $node = $(this)
-            $node.popover('hide')
-
             d3.select(this)
               .transition()
               .duration(250)
@@ -192,7 +176,7 @@ class D3Fakebook.LineChart extends D3Fakebook.Chart
     @drawAxes(data, comparison)
     @drawLines(data, @x, @y0, @color)
     @drawLines(comparison, @x, @y1, @colorAlt, true) if comparison
-    @drawLegend()
+    #@drawLegend()
     @drawTitle()
 
   drawAxes : (data, comparison) ->
@@ -214,7 +198,7 @@ class D3Fakebook.LineChart extends D3Fakebook.Chart
     xPosition = 0
 
     if isSecond
-      yPosition = @opts.yLabelComparisonOffset or @margin.right / 8
+      yPosition = @opts.yLabelComparisonOffset or (@innerWidth - @margin.right / 8)
       label = @opts.yLabelComparison
     else
       if @opts.yLabelOffset?
@@ -231,24 +215,14 @@ class D3Fakebook.LineChart extends D3Fakebook.Chart
     #labelContentText += ',' if _.str.words(label, ", ")[1]
 
     axis = @svg.append('g')
-        .attr('class', 'y axis')
+        .attr('class', "y axis#{if isSecond then ' comparison' else ''}")
 
     axis.call(if isSecond then @yAxisRight else @yAxisLeft)
         .selectAll('.tick')
-        .data(y.ticks(20), (d) -> d)
+        .data(y.ticks(10), (d) -> d)
         .exit()
         .classed('minor', true)
         .attr('transform', translation)
-
-    #axis.selectAll('line')
-        #.data(y.ticks(20), (d) -> console.log('d', d); return d)
-        #.enter()
-        #.append('line')
-        #.attr('class', 'minor')
-        #.attr('x1', 0)
-        #.attr('x2', -@innerWidth)
-        #.attr('y1', y)
-        #.attr('y2', y)
 
     labelContent = axis.append('text')
         .attr('transform', "rotate(-90)translate(#{xPosition}, #{yPosition})")
@@ -265,31 +239,60 @@ class D3Fakebook.LineChart extends D3Fakebook.Chart
         .attr('y', if isSecond then '4.4em' else '-3.0em')
         .text(label)
 
+  _nestData : (data, isComparison, primaryData) ->
+    isComparison or= false
+    if primaryData
+      minYear = @findMin primaryData, 'date'
+      minYear = new Date(minYear).getFullYear()
+
+      maxYear = @findMax primaryData, 'date'
+      maxYear = new Date(maxYear).getFullYear()
+
+    dataset = if isComparison then 'dataComparison' else 'data'
+    datasets = _.chain(data)
+                .compact()
+                .value()
+
+    if datasets? and datasets.length
+      datasets = _.flatten(datasets)
+
+    datasets = _.reject datasets, (d) -> _.isNaN(d.datum)
+
+    if maxYear? and minYear?
+      datasets = _.reject datasets, (d) ->
+        date = new Date(d.date).getFullYear()
+        date < minYear or date > maxYear
+
+    primaryKey = @opts.valueName
+    d3.nest().key((d) -> d[primaryKey]).entries(datasets)
+
   buildData : ->
+    primaryKey = @opts.valueName
+    dateRegex = new RegExp /\d{4}/
+
     _.each @data, (data) ->
-      _.map data.data, (d) ->
-        d.country = data.country
+      if data.data
+        _.map data.data, (d) ->
+          d[primaryKey] = data[primaryKey]
 
-    dataLabels         = _.compact(_.pluck(@data, 'country'))
-    dataLabels         = _.compact(_.pluck(@data, 'name')) unless dataLabels
-    datasets           = _.compact(_.flatten(_.pluck(@data, 'data')))
-    datasetsComparison = _.compact(_.flatten(_.pluck(@data, 'dataComparison')))
+      else if data.dataComparison
+        _.map data.dataComparison, (d) ->
+          d[primaryKey] = data[primaryKey]
 
-    datasets = _.flatten(datasets)
-    countries = _.uniq _.pluck(datasets, 'country')
-    data = _.groupBy datasets, (data) ->
-      data.country
+      else
+        _.map data, (v,k) ->
+          if k is 'date'
+            if dateRegex.test(v)
+              date = new Date v, 0, 1
+            else
+              date = new Date v
 
-    parseData = (datasets) ->
-      data = undefined
-      if datasets and datasets.length
-        data = {}
-        _(datasets).each (d) ->
-          if data[d.country]
-            data[d.country].push [d.xValue, d.yValue]
+            data[k] = date
+
           else
-            data[d.country] = [[d.xValue, d.yValue]]
+            data[k] = +v
 
-      data
+    parsedData           = @_nestData(@data, false)
+    parsedDataComparison = @_nestData(@data, true, parsedData) if @opts.dualY
 
-    [parseData(datasets), parseData(datasetsComparison)]
+    [parsedData, parsedDataComparison]

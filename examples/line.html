@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Line Chart Demonstrations</title>
+  <link rel="stylesheet" href="./d3-fakebook.css">
+  <style>
+    /* Page-specific styles */
+    html, body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    .wrapper {
+      width: 98%;
+      margin: 0 auto;
+    }
+
+    p {
+      margin: 20px 0;
+    }
+
+    pre {
+      margin: 20px 0;
+      overflow-x: auto;
+      background-color: #fafafa;
+      border: 1px dashed rgba(0,0,0,0.1);
+    }
+
+    .chart {
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <h1>Line Chart Examples</h1>
+    <pre>
+      <code>
+        // From the D3 Basic Line Chart example: http://bl.ocks.org/mbostock/3883245
+        d3.tsv('./data/aapl_stock.tsv', function(error, data) {
+          if (error) {
+            console.error(error);
+          } else {
+            var chart1 = new D3Fakebook.LineChart('#singleLine', {
+              data : data,
+              valueName : 'close'
+            });
+            chart1.render();
+          }
+        });
+      </code>
+    </pre>
+    <div id="singleLine" class="chart"></div>
+    <p>The date value should be either a string that can be translated in to <tt>Date</tt> object or a 4-digit year.</p>
+    <pre>
+      <code>
+        // Create chart with array of objects, pre-loaded on the page.
+        var chart2 = new D3Fakebook.TimeScaleLineChart('#singleDateLine', {
+          data : [
+            {"country": "World","data": [{"country":"World","value":0.941403509,"date":1990},{"country":"World","value":1.098611111,"date":1991},{"country":"World","value":1.201914894,"date":1992},{"country":"World","value":1.506818182,"date":1993},{"country":"World","value":2.102903226,"date":1994},{"country":"World","value":2.915277778,"date":1995},{"country":"World","value":3.778630952,"date":1996},{"country":"World","value":5.348248588,"date":1997},{"country":"World","value":7.682513369,"date":1998},{"country":"World","value":11.72526042,"date":1999},{"country":"World","value":17.29910891,"date":2000},{"country":"World","value":23.03475248,"date":2001},{"country":"World","value":27.243125,"date":2002},{"country":"World","value":32.77966981,"date":2003},{"country":"World","value":38.97925581,"date":2004},{"country":"World","value":46.31936893,"date":2005},{"country":"World","value":56.21097561,"date":2006},{"country":"World","value":66.46879808,"date":2007},{"country":"World","value":76.10307692,"date":2008},{"country":"World","value":83.32242857,"date":2009},{"country":"World","value":91.40808612,"date":2010}]},
+            {"country":"Norway","data":[{"country":"Norway","value":4.64,"date":1990},{"country":"Norway","value":5.5,"date":1991},{"country":"Norway","value":6.600004883,"date":1992},{"country":"Norway","value":8.62,"date":1993},{"country":"Norway","value":13.58000977,"date":1994},{"country":"Norway","value":22.51001953,"date":1995},{"country":"Norway","value":28.77001953,"date":1996},{"country":"Norway","value":38,"date":1997},{"country":"Norway","value":46.67003906,"date":1998},{"country":"Norway","value":59.66003906,"date":1999},{"country":"Norway","value":71.79,"date":2000},{"country":"Norway","value":79.6,"date":2001},{"country":"Norway","value":83.56007813,"date":2002},{"country":"Norway","value":89.08007813,"date":2003},{"country":"Norway","value":98.64007813,"date":2004},{"country":"Norway","value":102.8400781,"date":2005},{"country":"Norway","value":104.2900781,"date":2006},{"country":"Norway","value":106.6800781,"date":2007},{"country":"Norway","value":109.0400781,"date":2008},{"country":"Norway","value":110.8700781,"date":2009},{"country":"Norway","value":115.6800781,"date":2010}]},
+            {"country":"United Arab Emirates","data":[{"country":"United Arab Emirates","value":1.860001221,"date":1990},{"country":"United Arab Emirates","value":2.25,"date":1991},{"country":"United Arab Emirates","value":2.43,"date":1992},{"country":"United Arab Emirates","value":3.330002441,"date":1993},{"country":"United Arab Emirates","value":4.1,"date":1994},{"country":"United Arab Emirates","value":5.490004883,"date":1995},{"country":"United Arab Emirates","value":7.830004883,"date":1996},{"country":"United Arab Emirates","value":11.85000977,"date":1997},{"country":"United Arab Emirates","value":17.9,"date":1998},{"country":"United Arab Emirates","value":28.73001953,"date":1999},{"country":"United Arab Emirates","value":47.08003906,"date":2000},{"country":"United Arab Emirates","value":60.62003906,"date":2001},{"country":"United Arab Emirates","value":74.6,"date":2002},{"country":"United Arab Emirates","value":87.40007813,"date":2003},{"country":"United Arab Emirates","value":100.6900781,"date":2004},{"country":"United Arab Emirates","value":111.4200781,"date":2005},{"country":"United Arab Emirates","value":118.3700781,"date":2006},{"country":"United Arab Emirates","value":143.0300781,"date":2007},{"country":"United Arab Emirates","value":150.77,"date":2008},{"country":"United Arab Emirates","value":153.8,"date":2009},{"country":"United Arab Emirates","value":145.45,"date":2010}]},
+            {"country":"Grenada","data":[{"country":"Grenada","value":0.160000153,"date":1990},{"country":"Grenada","value":0.150000076,"date":1991},{"country":"Grenada","value":0.190000153,"date":1992},{"country":"Grenada","value":0.29,"date":1993},{"country":"Grenada","value":0.350000305,"date":1994},{"country":"Grenada","value":0.400000305,"date":1995},{"country":"Grenada","value":0.57,"date":1996},{"country":"Grenada","value":0.97000061,"date":1997},{"country":"Grenada","value":1.390001221,"date":1998},{"country":"Grenada","value":1.990001221,"date":1999},{"country":"Grenada","value":4.240002441,"date":2000},{"country":"Grenada","value":6.300004883,"date":2001},{"country":"Grenada","value":7.410004883,"date":2002},{"country":"Grenada","value":41.38003906,"date":2003},{"country":"Grenada","value":42.28003906,"date":2004},{"country":"Grenada","value":45.61003906,"date":2005},{"country":"Grenada","value":44.83003906,"date":2006},{"country":"Grenada","value":49.71003906,"date":2007},{"country":"Grenada","value":57.87003906,"date":2008},{"country":"Grenada","value":109.9200781,"date":2009},{"country":"Grenada","value":116.7100781,"date":2010}]}
+          ],
+          valueName : 'country'
+        });
+        chart2.render();
+      </code>
+    </pre>
+    <div id="singleDateLine" class="chart"></div>
+    <pre>
+      <code>
+        // Dual-y-axis chart, with all the bells and whistles
+        d3.json('./data/hours_worked_per_worker_and_economic_freedom.json', function(error, data) {
+          if (error) {
+            console.error(error);
+          } else {
+            var chart3 = new D3Fakebook.TimeScaleLineChart('#dualDateLine', {
+              data             : data,
+              valueName        : 'country',
+              dualY            : true,
+              title            : 'Hours worked per worker and Economic Freedom',
+              yLabel           : 'Hours worked per worker, average annual',
+              yLabelComparison : 'Economic Freedom, scale 1 to 10'
+            });
+            chart3.render();
+          }
+        });
+      </code>
+    </pre>
+    <div id="dualDateLine" class="chart"></div>
+  </div>
+
+  <script src="../bower_components/d3/d3.js"></script>
+  <script src="../bower_components/underscore/underscore.js"></script>
+  <script src="../dist/d3-fakebook.js"></script>
+  <script>
+    // From the D3 Basic Line Chart example: http://bl.ocks.org/mbostock/3883245
+    d3.tsv('./data/aapl_stock.tsv', function(error, data) {
+      if (error) {
+        console.error(error);
+      } else {
+        var chart1 = new D3Fakebook.LineChart('#singleLine', {
+          data : data,
+          valueName : 'close'
+        });
+        chart1.render();
+      }
+    });
+
+
+    // Create chart with array of objects, pre-loaded on the page.
+    var chart2 = new D3Fakebook.TimeScaleLineChart('#singleDateLine', {
+      data : [
+        {"country": "World","data": [{"country":"World","value":0.941403509,"date":1990},{"country":"World","value":1.098611111,"date":1991},{"country":"World","value":1.201914894,"date":1992},{"country":"World","value":1.506818182,"date":1993},{"country":"World","value":2.102903226,"date":1994},{"country":"World","value":2.915277778,"date":1995},{"country":"World","value":3.778630952,"date":1996},{"country":"World","value":5.348248588,"date":1997},{"country":"World","value":7.682513369,"date":1998},{"country":"World","value":11.72526042,"date":1999},{"country":"World","value":17.29910891,"date":2000},{"country":"World","value":23.03475248,"date":2001},{"country":"World","value":27.243125,"date":2002},{"country":"World","value":32.77966981,"date":2003},{"country":"World","value":38.97925581,"date":2004},{"country":"World","value":46.31936893,"date":2005},{"country":"World","value":56.21097561,"date":2006},{"country":"World","value":66.46879808,"date":2007},{"country":"World","value":76.10307692,"date":2008},{"country":"World","value":83.32242857,"date":2009},{"country":"World","value":91.40808612,"date":2010}]},
+        {"country":"Norway","data":[{"country":"Norway","value":4.64,"date":1990},{"country":"Norway","value":5.5,"date":1991},{"country":"Norway","value":6.600004883,"date":1992},{"country":"Norway","value":8.62,"date":1993},{"country":"Norway","value":13.58000977,"date":1994},{"country":"Norway","value":22.51001953,"date":1995},{"country":"Norway","value":28.77001953,"date":1996},{"country":"Norway","value":38,"date":1997},{"country":"Norway","value":46.67003906,"date":1998},{"country":"Norway","value":59.66003906,"date":1999},{"country":"Norway","value":71.79,"date":2000},{"country":"Norway","value":79.6,"date":2001},{"country":"Norway","value":83.56007813,"date":2002},{"country":"Norway","value":89.08007813,"date":2003},{"country":"Norway","value":98.64007813,"date":2004},{"country":"Norway","value":102.8400781,"date":2005},{"country":"Norway","value":104.2900781,"date":2006},{"country":"Norway","value":106.6800781,"date":2007},{"country":"Norway","value":109.0400781,"date":2008},{"country":"Norway","value":110.8700781,"date":2009},{"country":"Norway","value":115.6800781,"date":2010}]},
+        {"country":"United Arab Emirates","data":[{"country":"United Arab Emirates","value":1.860001221,"date":1990},{"country":"United Arab Emirates","value":2.25,"date":1991},{"country":"United Arab Emirates","value":2.43,"date":1992},{"country":"United Arab Emirates","value":3.330002441,"date":1993},{"country":"United Arab Emirates","value":4.1,"date":1994},{"country":"United Arab Emirates","value":5.490004883,"date":1995},{"country":"United Arab Emirates","value":7.830004883,"date":1996},{"country":"United Arab Emirates","value":11.85000977,"date":1997},{"country":"United Arab Emirates","value":17.9,"date":1998},{"country":"United Arab Emirates","value":28.73001953,"date":1999},{"country":"United Arab Emirates","value":47.08003906,"date":2000},{"country":"United Arab Emirates","value":60.62003906,"date":2001},{"country":"United Arab Emirates","value":74.6,"date":2002},{"country":"United Arab Emirates","value":87.40007813,"date":2003},{"country":"United Arab Emirates","value":100.6900781,"date":2004},{"country":"United Arab Emirates","value":111.4200781,"date":2005},{"country":"United Arab Emirates","value":118.3700781,"date":2006},{"country":"United Arab Emirates","value":143.0300781,"date":2007},{"country":"United Arab Emirates","value":150.77,"date":2008},{"country":"United Arab Emirates","value":153.8,"date":2009},{"country":"United Arab Emirates","value":145.45,"date":2010}]},
+        {"country":"Grenada","data":[{"country":"Grenada","value":0.160000153,"date":1990},{"country":"Grenada","value":0.150000076,"date":1991},{"country":"Grenada","value":0.190000153,"date":1992},{"country":"Grenada","value":0.29,"date":1993},{"country":"Grenada","value":0.350000305,"date":1994},{"country":"Grenada","value":0.400000305,"date":1995},{"country":"Grenada","value":0.57,"date":1996},{"country":"Grenada","value":0.97000061,"date":1997},{"country":"Grenada","value":1.390001221,"date":1998},{"country":"Grenada","value":1.990001221,"date":1999},{"country":"Grenada","value":4.240002441,"date":2000},{"country":"Grenada","value":6.300004883,"date":2001},{"country":"Grenada","value":7.410004883,"date":2002},{"country":"Grenada","value":41.38003906,"date":2003},{"country":"Grenada","value":42.28003906,"date":2004},{"country":"Grenada","value":45.61003906,"date":2005},{"country":"Grenada","value":44.83003906,"date":2006},{"country":"Grenada","value":49.71003906,"date":2007},{"country":"Grenada","value":57.87003906,"date":2008},{"country":"Grenada","value":109.9200781,"date":2009},{"country":"Grenada","value":116.7100781,"date":2010}]}
+      ],
+      valueName : 'country'
+    });
+    chart2.render();
+
+
+    // Dual-y-axis chart, with all the bells and whistles
+    d3.json('./data/hours_worked_per_worker_and_economic_freedom.json', function(error, data) {
+      if (error) {
+        console.error(error);
+      } else {
+        var chart3 = new D3Fakebook.TimeScaleLineChart('#dualDateLine', {
+          data             : data,
+          valueName        : 'country',
+          dualY            : true,
+          title            : 'Hours worked per worker and Economic Freedom',
+          yLabel           : 'Hours worked per worker, average annual',
+          yLabelComparison : 'Economic Freedom, scale 1 to 10'
+        });
+        chart3.render();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -11,6 +11,7 @@ class D3Fakebook.Chart
       throw error
 
     @opts  = opts
+    @opts.valueName or= 'value'
     @el    = d3.select(el)[0][0]
     @$el   = d3.select(@el)
     @title = opts.title
@@ -52,17 +53,6 @@ class D3Fakebook.Chart
   render : ->
     @createContainer()
 
-  # Array of colors to be used for the lines
-  chartColors : [
-    '#e69545',
-    '#5cb5dd',
-    '#6272d3',
-    '#5dc960',
-    '#e645cd',
-    '#a25cdd',
-    '#dd5c5c'
-  ]
-
   # Private method to set the color scale for the chart. Will set up to two
   # scales (to support dual-y-axis charts). It will check for the presence of
   # this.color and create this.colorAlt if it finds it.
@@ -87,7 +77,7 @@ class D3Fakebook.Chart
           chartColors.splice(index, 1)
 
     # set the scale
-    colorScale = d3.scale.ordinal().range chartColors
+    colorScale = d3.scale.category20()
 
     # assign it to an instance variable
     if @color? # if a this.color value is present, create this.colorAlt
@@ -154,7 +144,7 @@ class D3Fakebook.Chart
       else
         secondaryLabelText = null
 
-      primaryLabel     = _.str.capitalize(primaryLabelText)
+      primaryLabel     = primaryLabelText
       secondaryLabel   = secondaryLabelText
 
       top  = @_getLegendVerticalOffset secondaryLabel?

@@ -1,14 +1,13 @@
 (function() {
   'use strict';
-  var utils,
-    __hasProp = {}.hasOwnProperty,
+  var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   window.D3Fakebook = {};
 
   D3Fakebook.Chart = (function() {
     function Chart(el, opts) {
-      var error, _defaultDimensions, _margin;
+      var error, _base, _defaultDimensions, _margin;
       if (opts == null) {
         opts = {};
       }
@@ -18,6 +17,7 @@
         throw error;
       }
       this.opts = opts;
+      (_base = this.opts).valueName || (_base.valueName = 'value');
       this.el = d3.select(el)[0][0];
       this.$el = d3.select(this.el);
       this.title = opts.title;
@@ -48,8 +48,6 @@
     Chart.prototype.render = function() {
       return this.createContainer();
     };
-
-    Chart.prototype.chartColors = ['#e69545', '#5cb5dd', '#6272d3', '#5dc960', '#e645cd', '#a25cdd', '#dd5c5c'];
 
     Chart.prototype._setColorScale = function(colors, data) {
       var chartColors, colorScale, values;
@@ -138,7 +136,7 @@
         } else {
           secondaryLabelText = null;
         }
-        primaryLabel = _.str.capitalize(primaryLabelText);
+        primaryLabel = primaryLabelText;
         secondaryLabel = secondaryLabelText;
         top = this._getLegendVerticalOffset(secondaryLabel != null);
         left = secondaryLabel ? 20 : 0;
@@ -412,8 +410,6 @@
 
   'use strict';
 
-  utils = D3Fakebook.Chart.utils;
-
   D3Fakebook.LineChart = (function(_super) {
     __extends(LineChart, _super);
 
@@ -421,8 +417,13 @@
       return LineChart.__super__.constructor.apply(this, arguments);
     }
 
+    LineChart.prototype.render = function() {
+      this.createContainer();
+      return this.buildChart();
+    };
+
     LineChart.prototype.buildChart = function() {
-      var allData, countries, countriesComparison, data, dataComparison, xValues, y0Values, y1Values;
+      var allData, data, dataComparison, datasets, datasetsComparison, xValues, y0Values, y1Values;
       allData = this.buildData();
       data = allData[0];
       dataComparison = allData[1];
@@ -438,16 +439,12 @@
       this.y1 = d3.scale.linear().range([this.innerHeight, 0]);
       this.xAxis = this.createAxis('x', this.x, 'bottom');
       this.yAxisLeft = this.createAxis('y0', this.y0, 'left', {
-        size: {
-          major: 0 - this.innerWidth,
-          minor: 0 - this.innerWidth,
-          end: 0 - this.innerWidth
-        }
+        size: 0 - this.innerWidth
       });
       this.yAxisRight = this.createAxis('y1', this.y1, 'right');
-      countries = this.setCountries(this.color, data);
+      datasets = this.setDatasets(this.color, data);
       if (dataComparison) {
-        countriesComparison = this.setCountries(this.colorAlt, dataComparison);
+        datasetsComparison = this.setDatasets(this.colorAlt, dataComparison);
       }
       xValues = [];
       y0Values = [];
@@ -470,18 +467,10 @@
       if (dataComparison) {
         this.setDomain(this.y1, this.findMin(y1Values), this.findMax(y1Values));
       }
-      setTimeout(function() {
-        return $('.data-point').popover({
-          container: 'body',
-          html: true,
-          trigger: 'manual',
-          placement: 'top'
-        }, 10);
-      });
-      return this.drawChart(countries, countriesComparison);
+      return this.drawChart(datasets, datasetsComparison);
     };
 
-    LineChart.prototype.setCountries = function(scale, data) {
+    LineChart.prototype.setDatasets = function(scale, data) {
       return scale.domain().map(function(name) {
         return {
           name: name,
@@ -501,7 +490,6 @@
       var axis, _ticks;
       _ticks = {
         count: 10,
-        subdivide: true,
         padding: 10,
         size: null
       };
@@ -510,7 +498,7 @@
       if (plane === 'x') {
         axis = d3.svg.axis().scale(scale).innerTickSize(10).outerTickSize(10).orient(position);
       } else if (plane.match(/^y/)) {
-        axis = d3.svg.axis().scale(scale).orient(position).ticks(ticks.count).innerTickSize([ticks.size]).outerTickSize([ticks.size]).tickPadding(ticks.padding);
+        axis = d3.svg.axis().scale(scale).orient(position).ticks(ticks.count).innerTickSize(ticks.size).outerTickSize(ticks.size).tickPadding(ticks.padding);
         this.setTickFormat(axis);
       }
       return axis;
@@ -525,7 +513,7 @@
     };
 
     LineChart.prototype.drawLines = function(dataset, x, y, color, isComparison) {
-      var country, legendAttr, legendColorAttr, line, lines, pointOpacity, pointRadius, points, pointsGroup, transitionDuration;
+      var legendAttr, legendColorAttr, line, lines, pointOpacity, pointRadius, points, pointsGroup, series, transitionDuration;
       isComparison || (isComparison = false);
       line = d3.svg.line().defined(function(d) {
         if (d) {
@@ -536,11 +524,11 @@
       }).y(function(d) {
         return y(d[1]);
       });
-      lines = this.svg.selectAll('.countries').data(dataset);
-      country = lines.enter().append('g').attr('class', 'country');
+      lines = this.svg.selectAll('.datasets').data(dataset);
+      series = lines.enter().append('g').attr('class', 'series');
       legendAttr = "data-legend" + (isComparison ? '-comparison' : void 0);
       legendColorAttr = 'data-legend-color';
-      country.append('path').attr('class', 'line').attr('d', function(d) {
+      series.append('path').attr('class', 'line').attr('d', function(d) {
         return line(d.values);
       }).attr(legendAttr, function(d) {
         return d.name;
@@ -553,7 +541,7 @@
       transitionDuration = 1000;
       pointOpacity = 0.4;
       pointsGroup = this.svg.append('g');
-      points = country.selectAll('.data-point').data(function(d) {
+      points = series.selectAll('.data-point').data(function(d) {
         var filtered;
         filtered = _.filter(d.values, function(data) {
           return !_.isNaN(data[0]) && !_.isNaN(data[1]);
@@ -578,14 +566,8 @@
       })(this)).style('fill', function(d, i) {
         return color(d[2]);
       }).on('mouseover', function(d) {
-        var $node;
-        $node = $(this);
-        $node.popover('show');
         return d3.select(this).transition().duration(250).style('opacity', 1);
       }).on('mouseout', function(d) {
-        var $node;
-        $node = $(this);
-        $node.popover('hide');
         return d3.select(this).transition().duration(250).style('opacity', pointOpacity);
       });
     };
@@ -596,7 +578,6 @@
       if (comparison) {
         this.drawLines(comparison, this.x, this.y1, this.colorAlt, true);
       }
-      this.drawLegend();
       return this.drawTitle();
     };
 
@@ -618,7 +599,7 @@
       y = isSecond ? this.y1 : this.y0;
       xPosition = 0;
       if (isSecond) {
-        yPosition = this.opts.yLabelComparisonOffset || this.margin.right / 8;
+        yPosition = this.opts.yLabelComparisonOffset || (this.innerWidth - this.margin.right / 8);
         label = this.opts.yLabelComparison;
       } else {
         if (this.opts.yLabelOffset != null) {
@@ -631,8 +612,8 @@
       }
       translation = isSecond ? "translate(" + this.innerWidth + ", 0)" : null;
       labelContentText = label;
-      axis = this.svg.append('g').attr('class', 'y axis');
-      axis.call(isSecond ? this.yAxisRight : this.yAxisLeft).selectAll('.tick').data(y.ticks(20), function(d) {
+      axis = this.svg.append('g').attr('class', "y axis" + (isSecond ? ' comparison' : ''));
+      axis.call(isSecond ? this.yAxisRight : this.yAxisLeft).selectAll('.tick').data(y.ticks(10), function(d) {
         return d;
       }).exit().classed('minor', true).attr('transform', translation);
       labelContent = axis.append('text').attr('transform', "rotate(-90)translate(" + xPosition + ", " + yPosition + ")").style('text-anchor', 'middle').attr('class', 'chart-label chart-label-y-axis');
@@ -640,39 +621,70 @@
       return labelContent.append('tspan').attr('x', '-160').attr('y', isSecond ? '4.4em' : '-3.0em').text(label);
     };
 
-    LineChart.prototype.buildData = function() {
-      var countries, data, dataLabels, datasets, datasetsComparison, parseData;
-      _.each(this.data, function(data) {
-        return _.map(data.data, function(d) {
-          return d.country = data.country;
-        });
-      });
-      dataLabels = _.compact(_.pluck(this.data, 'country'));
-      if (!dataLabels) {
-        dataLabels = _.compact(_.pluck(this.data, 'name'));
+    LineChart.prototype._nestData = function(data, isComparison, primaryData) {
+      var dataset, datasets, maxYear, minYear, primaryKey;
+      isComparison || (isComparison = false);
+      if (primaryData) {
+        minYear = this.findMin(primaryData, 'date');
+        minYear = new Date(minYear).getFullYear();
+        maxYear = this.findMax(primaryData, 'date');
+        maxYear = new Date(maxYear).getFullYear();
       }
-      datasets = _.compact(_.flatten(_.pluck(this.data, 'data')));
-      datasetsComparison = _.compact(_.flatten(_.pluck(this.data, 'dataComparison')));
-      datasets = _.flatten(datasets);
-      countries = _.uniq(_.pluck(datasets, 'country'));
-      data = _.groupBy(datasets, function(data) {
-        return data.country;
+      dataset = isComparison ? 'dataComparison' : 'data';
+      datasets = _.chain(data).compact().value();
+      if ((datasets != null) && datasets.length) {
+        datasets = _.flatten(datasets);
+      }
+      datasets = _.reject(datasets, function(d) {
+        return _.isNaN(d.datum);
       });
-      parseData = function(datasets) {
-        data = void 0;
-        if (datasets && datasets.length) {
-          data = {};
-          _(datasets).each(function(d) {
-            if (data[d.country]) {
-              return data[d.country].push([d.xValue, d.yValue]);
+      if ((maxYear != null) && (minYear != null)) {
+        datasets = _.reject(datasets, function(d) {
+          var date;
+          date = new Date(d.date).getFullYear();
+          return date < minYear || date > maxYear;
+        });
+      }
+      primaryKey = this.opts.valueName;
+      return d3.nest().key(function(d) {
+        return d[primaryKey];
+      }).entries(datasets);
+    };
+
+    LineChart.prototype.buildData = function() {
+      var dateRegex, parsedData, parsedDataComparison, primaryKey;
+      primaryKey = this.opts.valueName;
+      dateRegex = new RegExp(/\d{4}/);
+      _.each(this.data, function(data) {
+        if (data.data) {
+          return _.map(data.data, function(d) {
+            return d[primaryKey] = data[primaryKey];
+          });
+        } else if (data.dataComparison) {
+          return _.map(data.dataComparison, function(d) {
+            return d[primaryKey] = data[primaryKey];
+          });
+        } else {
+          return _.map(data, function(v, k) {
+            var date;
+            if (k === 'date') {
+              if (dateRegex.test(v)) {
+                date = new Date(v, 0, 1);
+              } else {
+                date = new Date(v);
+              }
+              return data[k] = date;
             } else {
-              return data[d.country] = [[d.xValue, d.yValue]];
+              return data[k] = +v;
             }
           });
         }
-        return data;
-      };
-      return [parseData(datasets), parseData(datasetsComparison)];
+      });
+      parsedData = this._nestData(this.data, false);
+      if (this.opts.dualY) {
+        parsedDataComparison = this._nestData(this.data, true, parsedData);
+      }
+      return [parsedData, parsedDataComparison];
     };
 
     return LineChart;
@@ -724,13 +736,14 @@
       this.yAxisLeft = this.createAxis('y0', this.y0, 'left', {
         size: 0 - this.innerWidth
       });
-      this.yAxisRight = this.createAxis('y1', this.y1, 'right');
+      this.yAxisRight = this.createAxis('y1', this.y1, 'right', {
+        size: this.innerWidth
+      });
       this.x.domain([this.findMin(data, 'date', false), this.findMax(data, 'date', false)]);
       this.setDomain(this.y0, this.findMin(data), this.findMax(data));
       if (dataComparison) {
         this.setDomain(this.y1, this.findMin(dataComparison), this.findMax(dataComparison));
       }
-      setTimeout(function() {});
       return this.drawChart(data, dataComparison);
     };
 
@@ -835,32 +848,35 @@
     };
 
     TimeScaleLineChart.prototype._nestData = function(data, isComparison, primaryData) {
-      var dataset, datasets, maxYear, minYear;
+      var dataset, datasets, maxdate, mindate, primaryKey;
       isComparison || (isComparison = false);
       if (primaryData) {
-        minYear = this.findMin(primaryData, 'date');
-        minYear = new Date(minYear).getFullYear();
-        maxYear = this.findMax(primaryData, 'date');
-        maxYear = new Date(maxYear).getFullYear();
+        mindate = this.findMin(primaryData, 'date');
+        mindate = new Date(mindate).getFullYear();
+        maxdate = this.findMax(primaryData, 'date');
+        maxdate = new Date(maxdate).getFullYear();
       }
       dataset = isComparison ? 'dataComparison' : 'data';
       datasets = _.chain(data).pluck(dataset).compact().value();
       if ((datasets != null) && datasets.length) {
+        primaryKey = this.opts.valueName;
         datasets = _.chain(datasets).flatten().map(function(d) {
-          return {
-            country: d.country,
+          var dataAttrs;
+          dataAttrs = {
             datum: +d.value,
-            date: new Date(d.year, 0, 1)
+            date: new Date(d.date, 0, 1)
           };
+          dataAttrs[primaryKey] = d[primaryKey];
+          return dataAttrs;
         }).value();
         datasets = _.reject(datasets, function(d) {
           return _.isNaN(d.datum);
         });
-        if ((maxYear != null) && (minYear != null)) {
+        if ((maxdate != null) && (mindate != null)) {
           datasets = _.reject(datasets, function(d) {
             var date;
-            date = new Date(d.date).getFullYear();
-            return date < minYear || date > maxYear;
+            date = new Date(d.date, 0, 1).getFullYear();
+            return date < mindate || date > maxdate;
           });
         }
         return d3.nest().key(function(d) {
@@ -869,20 +885,6 @@
       } else {
         return null;
       }
-    };
-
-    TimeScaleLineChart.prototype.buildData = function() {
-      var parsedData, parsedDataComparison;
-      _.each(this.data, function(data) {
-        return _.map(data.data, function(d) {
-          return d.country = data.country;
-        });
-      });
-      parsedData = this._nestData(this.data, false);
-      if (this.opts.dualY) {
-        parsedDataComparison = this._nestData(this.data, true, parsedData);
-      }
-      return [parsedData, parsedDataComparison];
     };
 
     return TimeScaleLineChart;

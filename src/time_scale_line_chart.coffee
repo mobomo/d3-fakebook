@@ -40,7 +40,8 @@ class D3Fakebook.TimeScaleLineChart extends D3Fakebook.LineChart
     @yAxisLeft = @createAxis 'y0', @y0, 'left',
       size : 0 - @innerWidth
 
-    @yAxisRight = @createAxis 'y1', @y1, 'right'
+    @yAxisRight = @createAxis 'y1', @y1, 'right',
+      size : @innerWidth
 
     # Set domains
     @x.domain [
@@ -51,16 +52,6 @@ class D3Fakebook.TimeScaleLineChart extends D3Fakebook.LineChart
     @setDomain @y0, @findMin(data), @findMax(data)
     if dataComparison
       @setDomain @y1, @findMin(dataComparison), @findMax(dataComparison)
-
-    # NOTE: timer is necessary to ensure that the nodes are in the DOM when
-    # this event listener is initialized
-    setTimeout ->
-      #$('.data-point').popover
-        #container : 'body'
-        #html      : true
-        #trigger   : 'manual'
-        #placement : 'top'
-      #, 10
 
     @drawChart data, dataComparison
 
@@ -130,27 +121,14 @@ class D3Fakebook.TimeScaleLineChart extends D3Fakebook.LineChart
           .attr('title', (d) ->
             "#{d.date.getFullYear()} - #{d.datum}"
           )
-          # TODO: miketierney - re-add popover functionality
-          #.attr('data-toggle', 'popover')
-          #.attr('data-content',(d) =>
-          #  "<strong style=\"color: #{color d.country}\">
-          #  #{format @utils.round2(d.datum, 10)}
-          #  #</strong> #{d.date.getFullYear()}"
-          #)
           .style('fill', (d,i) -> color d.country)
           .on('mouseover', (d) ->
-            #$node = $(this)
-            #$node.popover('show')
-
             d3.select(this)
               .transition()
               .duration(250)
               .style('opacity', 1)
           )
           .on('mouseout', (d) ->
-            #$node = $(this)
-            #$node.popover('hide')
-
             d3.select(this)
               .transition()
               .duration(250)
@@ -172,11 +150,11 @@ class D3Fakebook.TimeScaleLineChart extends D3Fakebook.LineChart
   _nestData : (data, isComparison, primaryData) ->
     isComparison or= false
     if primaryData
-      minYear = @findMin primaryData, 'date'
-      minYear = new Date(minYear).getFullYear()
+      mindate = @findMin primaryData, 'date'
+      mindate = new Date(mindate).getFullYear()
 
-      maxYear = @findMax primaryData, 'date'
-      maxYear = new Date(maxYear).getFullYear()
+      maxdate = @findMax primaryData, 'date'
+      maxdate = new Date(maxdate).getFullYear()
 
     dataset = if isComparison then 'dataComparison' else 'data'
     datasets = _.chain(data)
@@ -185,31 +163,28 @@ class D3Fakebook.TimeScaleLineChart extends D3Fakebook.LineChart
                 .value()
 
     if datasets? and datasets.length
-      datasets = _.chain(datasets)
+      #datasets = _.flatten(datasets)
+      primaryKey = @opts.valueName
+      datasets   = _.chain(datasets)
         .flatten()
         .map (d) ->
-          country : d.country
-          datum   : +d.value
-          date    : new Date d.year, 0, 1
+
+          dataAttrs =
+            datum   : +d.value
+            date    : new Date d.date, 0, 1
+
+          dataAttrs[primaryKey] = d[primaryKey]
+          return dataAttrs
+
         .value()
 
       datasets = _.reject datasets, (d) -> _.isNaN(d.datum)
 
-      if maxYear? and minYear?
+      if maxdate? and mindate?
         datasets = _.reject datasets, (d) ->
-          date = new Date(d.date).getFullYear()
-          date < minYear or date > maxYear
+          date = new Date(d.date, 0, 1).getFullYear()
+          date < mindate or date > maxdate
 
       d3.nest().key((d) -> d.country).entries(datasets)
     else
       return null
-
-  buildData : ->
-    _.each @data, (data) ->
-      _.map data.data, (d) ->
-        d.country = data.country
-
-    parsedData           = @_nestData(@data, false)
-    parsedDataComparison = @_nestData(@data, true, parsedData) if @opts.dualY
-
-    [parsedData, parsedDataComparison]
