@@ -1,6 +1,7 @@
 (function() {
   'use strict';
-  var __hasProp = {}.hasOwnProperty,
+  var utils,
+    __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   window.D3Fakebook = {};
@@ -67,7 +68,7 @@
           };
         })(this));
       }
-      colorScale = d3.scale.ordinal().range(chartColors);
+      colorScale = d3.scale.category20();
       if (this.color != null) {
         return this.colorAlt = colorScale;
       } else {
@@ -175,6 +176,14 @@
           }
         };
       })(this));
+    };
+
+    Chart.prototype.utils = {
+      round2: function(num) {
+        num = parseFloat(num, 10);
+        +num.toFixed(2).replace(/\.00$/, '');
+        return num;
+      }
     };
 
     return Chart;
@@ -403,6 +412,8 @@
 
   'use strict';
 
+  utils = D3Fakebook.Chart.utils;
+
   D3Fakebook.LineChart = (function(_super) {
     __extends(LineChart, _super);
 
@@ -418,7 +429,7 @@
       _(allData.length).times((function(_this) {
         return function(i) {
           var colors;
-          colors = _this.countryColors;
+          colors = _this.chartColors;
           return _this._setColorScale(colors, allData[i]);
         };
       })(this));
@@ -492,18 +503,14 @@
         count: 10,
         subdivide: true,
         padding: 10,
-        size: {
-          major: 0,
-          minor: 0,
-          end: 0
-        }
+        size: null
       };
       ticks = _.extend(_ticks, ticks || {});
       axis = void 0;
       if (plane === 'x') {
-        axis = d3.svg.axis().scale(scale).orient(position);
+        axis = d3.svg.axis().scale(scale).innerTickSize(10).outerTickSize(10).orient(position);
       } else if (plane.match(/^y/)) {
-        axis = d3.svg.axis().scale(scale).orient(position).ticks(ticks.count).tickSubdivide(ticks.subdivide).tickSize(ticks.size.major, ticks.size.minor, ticks.size.end).tickPadding(ticks.padding);
+        axis = d3.svg.axis().scale(scale).orient(position).ticks(ticks.count).innerTickSize([ticks.size]).outerTickSize([ticks.size]).tickPadding(ticks.padding);
         this.setTickFormat(axis);
       }
       return axis;
@@ -556,7 +563,7 @@
         });
         return filtered;
       });
-      points.enter().append('circle').attr('class', 'data-point').style('opacity', pointOpacity).attr('cx', function(d) {
+      return points.enter().append('circle').attr('class', 'data-point').style('opacity', pointOpacity).attr('cx', function(d) {
         return x(d[0]);
       }).attr('cy', function(d) {
         return y(d[1]);
@@ -564,9 +571,11 @@
         return pointRadius;
       }).attr('title', function(d) {
         return d[2];
-      }).attr('data-toggle', 'popover').attr('data-content', function(d) {
-        return "X: " + (parseFloat(d[0], 10).round2()) + " <br /> Y: " + (parseFloat(d[1], 10).round2());
-      }).style('fill', function(d, i) {
+      }).attr('data-toggle', 'popover').attr('data-content', (function(_this) {
+        return function(d) {
+          return "X: " + (_this.utils.round2(d[0])) + " <br /> Y: " + (_this.utils.round2(d[1]));
+        };
+      })(this)).style('fill', function(d, i) {
         return color(d[2]);
       }).on('mouseover', function(d) {
         var $node;
@@ -579,17 +588,6 @@
         $node.popover('hide');
         return d3.select(this).transition().duration(250).style('opacity', pointOpacity);
       });
-      if (points[0] && points[0][0] && (points[0][0].raphaelNode != null)) {
-        return _.each(points, function(pointGroup) {
-          return _.each(pointGroup, function(point) {
-            var $rNode, content, title;
-            content = point.domNode['data-content'];
-            title = point.domNode['title'];
-            $rNode = $("[raphaelid='" + point.raphaelNode.id + "']");
-            return $rNode.addClass('data-point').attr('title', title).attr('data-content', content).attr('data-toggle', 'popover');
-          });
-        });
-      }
     };
 
     LineChart.prototype.drawChart = function(data, comparison) {
@@ -615,24 +613,31 @@
     };
 
     LineChart.prototype.drawYAxis = function(isSecond) {
-      var label, labelContent, labelContentText, translation, xPosition, yPosition;
+      var axis, label, labelContent, labelContentText, offset, translation, xPosition, y, yPosition;
       isSecond || (isSecond = false);
+      y = isSecond ? this.y1 : this.y0;
       xPosition = 0;
       if (isSecond) {
         yPosition = this.opts.yLabelComparisonOffset || this.margin.right / 8;
         label = this.opts.yLabelComparison;
       } else {
-        yPosition = 0 - this.opts.yLabelOffset;
+        if (this.opts.yLabelOffset != null) {
+          offset = this.opts.yLabelOffset;
+        } else {
+          offset = this.margin.left / 8;
+        }
+        yPosition = 0 - offset;
         label = this.opts.yLabel;
       }
       translation = isSecond ? "translate(" + this.innerWidth + ", 0)" : null;
-      labelContentText = _.str.words(label, ", ")[0];
-      if (_.str.words(label, ", ")[1]) {
-        labelContentText += ',';
-      }
-      labelContent = this.svg.append('g').attr('class', 'y axis').call(isSecond ? this.yAxisRight : this.yAxisLeft).attr('transform', translation).append('text').attr('transform', "rotate(-90)translate(" + xPosition + ", " + yPosition + ")").style('text-anchor', 'middle').attr('class', 'chart-label chart-label-y-axis');
+      labelContentText = label;
+      axis = this.svg.append('g').attr('class', 'y axis');
+      axis.call(isSecond ? this.yAxisRight : this.yAxisLeft).selectAll('.tick').data(y.ticks(20), function(d) {
+        return d;
+      }).exit().classed('minor', true).attr('transform', translation);
+      labelContent = axis.append('text').attr('transform', "rotate(-90)translate(" + xPosition + ", " + yPosition + ")").style('text-anchor', 'middle').attr('class', 'chart-label chart-label-y-axis');
       labelContent.append('tspan').attr('x', '-160').attr('y', isSecond ? '3.2em' : '-4.2em').text();
-      return labelContent.append('tspan').attr('x', '-160').attr('y', isSecond ? '4.4em' : '-3.0em').text(_.str.words(label, ", ")[1]);
+      return labelContent.append('tspan').attr('x', '-160').attr('y', isSecond ? '4.4em' : '-3.0em').text(label);
     };
 
     LineChart.prototype.buildData = function() {
@@ -683,6 +688,11 @@
       return TimeScaleLineChart.__super__.constructor.apply(this, arguments);
     }
 
+    TimeScaleLineChart.prototype.render = function() {
+      this.createContainer();
+      return this.buildChart();
+    };
+
     TimeScaleLineChart.prototype.buildChart = function() {
       var allData, data, dataComparison, hasData;
       allData = _.compact(this.buildData());
@@ -701,7 +711,7 @@
       _(allData.length).times((function(_this) {
         return function(i) {
           var colors;
-          colors = _this.countryColors;
+          colors = _this.chartColors;
           if (allData[i].length) {
             return _this._setColorScale(colors, allData[i]);
           }
@@ -712,11 +722,7 @@
       this.y1 = d3.scale.linear().range([this.innerHeight, 0]);
       this.xAxis = this.createAxis('x', this.x, 'bottom');
       this.yAxisLeft = this.createAxis('y0', this.y0, 'left', {
-        size: {
-          major: 0 - this.innerWidth,
-          minor: 0 - this.innerWidth,
-          end: 0 - this.innerWidth
-        }
+        size: 0 - this.innerWidth
       });
       this.yAxisRight = this.createAxis('y1', this.y1, 'right');
       this.x.domain([this.findMin(data, 'date', false), this.findMax(data, 'date', false)]);
@@ -724,14 +730,7 @@
       if (dataComparison) {
         this.setDomain(this.y1, this.findMin(dataComparison), this.findMax(dataComparison));
       }
-      setTimeout(function() {
-        return $('.data-point').popover({
-          container: 'body',
-          html: true,
-          trigger: 'manual',
-          placement: 'top'
-        }, 10);
-      });
+      setTimeout(function() {});
       return this.drawChart(data, dataComparison);
     };
 
@@ -767,8 +766,10 @@
       return max;
     };
 
+    TimeScaleLineChart.prototype.drawLegend = function() {};
+
     TimeScaleLineChart.prototype.drawLines = function(dataset, x, y, color, isComparison) {
-      var country, format, legendAttr, legendColorAttr, line, lines, pointOpacity, pointRadius, points, pointsGroup, transitionDuration, translation;
+      var format, legendAttr, legendColorAttr, line, lines, pointOpacity, pointRadius, points, pointsGroup, series, transitionDuration, translation;
       isComparison || (isComparison = false);
       format = d3.format('n');
       line = d3.svg.line().x(function(d) {
@@ -776,14 +777,14 @@
       }).y(function(d) {
         return y(d.datum);
       });
-      lines = this.svg.selectAll('.countries').data(dataset);
-      country = lines.enter().append('g').attr('class', 'country');
+      lines = this.svg.selectAll('.dataset').data(dataset);
+      series = lines.enter().append('g').attr('class', 'series');
       legendAttr = 'data-legend';
       legendColorAttr = 'data-legend-color';
       if (isComparison) {
         legendAttr += '-comparison';
       }
-      country.append('path').attr('class', 'line').attr('d', function(d) {
+      series.append('path').attr('class', 'line').attr('d', function(d) {
         return line(d.values);
       }).attr(legendAttr, function(d) {
         return d.key;
@@ -796,7 +797,7 @@
       transitionDuration = 1000;
       pointOpacity = 0.4;
       pointsGroup = this.svg.append('g');
-      points = country.selectAll('.data-point').data(function(d) {
+      points = series.selectAll('.data-point').data(function(d) {
         var filtered;
         filtered = _.filter(d.values, function(v) {
           return !_.isNaN(v.datum);
@@ -810,25 +811,17 @@
       }).attr('r', function() {
         return pointRadius;
       }).attr('title', function(d) {
-        return d.country;
-      }).attr('data-toggle', 'popover').attr('data-content', function(d) {
-        return "<strong style=\"color: " + (color(d.country)) + "\"> " + (format(parseFloat(d.datum, 10).round2())) + " #</strong> " + (d.date.getFullYear());
+        return "" + (d.date.getFullYear()) + " - " + d.datum;
       }).style('fill', function(d, i) {
         return color(d.country);
       }).on('mouseover', function(d) {
-        var $node;
-        $node = $(this);
-        $node.popover('show');
         return d3.select(this).transition().duration(250).style('opacity', 1);
       }).on('mouseout', function(d) {
-        var $node;
-        $node = $(this);
-        $node.popover('hide');
         return d3.select(this).transition().duration(250).style('opacity', pointOpacity);
       });
       if (this.opts.labelLines === true && !this.opts.dualY) {
         translation = "translate(" + (x(d.value.date)) + ", " + (y(d.value.datum)) + ")";
-        return country.append('text').datum(function(d) {
+        return series.append('text').datum(function(d) {
           return {
             name: d.name,
             value: d.values[d.values.length - 1]

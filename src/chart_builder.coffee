@@ -203,3 +203,9 @@ class D3Fakebook.Chart
           title = @getTitle()
           if title then title else null
         )
+
+  utils :
+    round2 : (num) ->
+      num = parseFloat(num, 10)
+      +num.toFixed(2).replace /\.00$/, ''
+      return num

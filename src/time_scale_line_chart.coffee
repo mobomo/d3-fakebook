@@ -1,6 +1,10 @@
 'use strict'
 
 class D3Fakebook.TimeScaleLineChart extends D3Fakebook.LineChart
+  render : ->
+    @createContainer()
+    @buildChart()
+
   buildChart: ->
     allData        = _.compact @buildData()
     data           = allData[0]
@@ -17,7 +21,7 @@ class D3Fakebook.TimeScaleLineChart extends D3Fakebook.LineChart
       return
 
     _(allData.length).times (i) =>
-      colors = @countryColors
+      colors = @chartColors
       if allData[i].length
         @_setColorScale colors, allData[i]
 
@@ -34,10 +38,7 @@ class D3Fakebook.TimeScaleLineChart extends D3Fakebook.LineChart
     @xAxis = @createAxis 'x', @x, 'bottom'
 
     @yAxisLeft = @createAxis 'y0', @y0, 'left',
-      size :
-        major : 0 - @innerWidth
-        minor : 0 - @innerWidth
-        end   : 0 - @innerWidth
+      size : 0 - @innerWidth
 
     @yAxisRight = @createAxis 'y1', @y1, 'right'
 
@@ -54,12 +55,12 @@ class D3Fakebook.TimeScaleLineChart extends D3Fakebook.LineChart
     # NOTE: timer is necessary to ensure that the nodes are in the DOM when
     # this event listener is initialized
     setTimeout ->
-      $('.data-point').popover
-        container : 'body'
-        html      : true
-        trigger   : 'manual'
-        placement : 'top'
-      , 10
+      #$('.data-point').popover
+        #container : 'body'
+        #html      : true
+        #trigger   : 'manual'
+        #placement : 'top'
+      #, 10
 
     @drawChart data, dataComparison
 
@@ -77,6 +78,9 @@ class D3Fakebook.TimeScaleLineChart extends D3Fakebook.LineChart
 
     max
 
+  drawLegend : ->
+    # noop
+
   drawLines : (dataset, x, y, color, isComparison) ->
     isComparison ||= false
 
@@ -86,19 +90,19 @@ class D3Fakebook.TimeScaleLineChart extends D3Fakebook.LineChart
             .x((d) -> x d.date)
             .y((d) -> y d.datum)
 
-    lines = @svg.selectAll('.countries')
+    lines = @svg.selectAll('.dataset')
                 .data(dataset)
 
-    country = lines.enter()
+    series = lines.enter()
                   .append('g')
-                  .attr('class', 'country')
+                  .attr('class', 'series')
 
     legendAttr      = 'data-legend'
     legendColorAttr = 'data-legend-color'
 
     legendAttr += '-comparison' if isComparison
 
-    country.append('path')
+    series.append('path')
           .attr('class', 'line')
           .attr('d', (d) -> line(d.values))
           .attr(legendAttr, (d) -> d.key)
@@ -112,7 +116,7 @@ class D3Fakebook.TimeScaleLineChart extends D3Fakebook.LineChart
     pointOpacity = 0.4
 
     pointsGroup = @svg.append('g')
-    points = country.selectAll('.data-point').data (d) ->
+    points = series.selectAll('.data-point').data (d) ->
       filtered = _.filter(d.values, (v) -> not _.isNaN(v.datum))
       filtered
 
@@ -124,18 +128,19 @@ class D3Fakebook.TimeScaleLineChart extends D3Fakebook.LineChart
           .attr('cy', (d) -> y d.datum)
           .attr('r', () -> pointRadius)
           .attr('title', (d) ->
-            d.country
+            "#{d.date.getFullYear()} - #{d.datum}"
           )
-          .attr('data-toggle', 'popover')
-          .attr('data-content',(d) ->
-            "<strong style=\"color: #{color d.country}\">
-            #{format parseFloat(d.datum, 10).round2()}
-            #</strong> #{d.date.getFullYear()}"
-          )
+          # TODO: miketierney - re-add popover functionality
+          #.attr('data-toggle', 'popover')
+          #.attr('data-content',(d) =>
+          #  "<strong style=\"color: #{color d.country}\">
+          #  #{format @utils.round2(d.datum, 10)}
+          #  #</strong> #{d.date.getFullYear()}"
+          #)
           .style('fill', (d,i) -> color d.country)
           .on('mouseover', (d) ->
-            $node = $(this)
-            $node.popover('show')
+            #$node = $(this)
+            #$node.popover('show')
 
             d3.select(this)
               .transition()
@@ -143,8 +148,8 @@ class D3Fakebook.TimeScaleLineChart extends D3Fakebook.LineChart
               .style('opacity', 1)
           )
           .on('mouseout', (d) ->
-            $node = $(this)
-            $node.popover('hide')
+            #$node = $(this)
+            #$node.popover('hide')
 
             d3.select(this)
               .transition()
@@ -155,7 +160,7 @@ class D3Fakebook.TimeScaleLineChart extends D3Fakebook.LineChart
     # no line labeling for dual axis charts
     if @opts.labelLines is true and not @opts.dualY
       translation = "translate(#{x(d.value.date)}, #{y(d.value.datum)})"
-      country.append('text')
+      series.append('text')
             .datum((d) ->
               {name : d.name, value : d.values[d.values.length - 1]}
             )

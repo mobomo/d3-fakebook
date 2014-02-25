@@ -7,7 +7,7 @@ class D3Fakebook.LineChart extends D3Fakebook.Chart
     dataComparison = allData[1]
 
     _(allData.length).times (i) =>
-      colors = @countryColors
+      colors = @chartColors
       @_setColorScale colors, allData[i]
 
     @x = d3.scale.linear()
@@ -82,10 +82,7 @@ class D3Fakebook.LineChart extends D3Fakebook.Chart
       count     : 10
       subdivide : true
       padding   : 10
-      size      :
-        major : 0
-        minor : 0
-        end   : 0
+      size      : null
 
     ticks = _.extend _ticks, ticks or {}
     axis = undefined
@@ -93,6 +90,8 @@ class D3Fakebook.LineChart extends D3Fakebook.Chart
     if plane is 'x'
       axis = d3.svg.axis()
         .scale(scale)
+        .innerTickSize(10)
+        .outerTickSize(10)
         .orient(position)
 
     else if plane.match /^y/
@@ -100,8 +99,8 @@ class D3Fakebook.LineChart extends D3Fakebook.Chart
         .scale(scale)
         .orient(position)
         .ticks(ticks.count)
-        .tickSubdivide(ticks.subdivide)
-        .tickSize(ticks.size.major, ticks.size.minor, ticks.size.end)
+        .innerTickSize([ticks.size])
+        .outerTickSize([ticks.size])
         .tickPadding(ticks.padding)
 
       @setTickFormat(axis)
@@ -165,10 +164,10 @@ class D3Fakebook.LineChart extends D3Fakebook.Chart
             d[2]
           )
           .attr('data-toggle', 'popover')
-          .attr('data-content',(d) ->
-            "X: #{parseFloat(d[0], 10).round2()}
+          .attr('data-content',(d) =>
+            "X: #{@utils.round2(d[0])}
             <br />
-            Y: #{parseFloat(d[1], 10).round2()}")
+            Y: #{@utils.round2(d[1])}")
           .style('fill', (d,i) -> color d[2])
           .on('mouseover', (d) ->
             $node = $(this)
@@ -188,19 +187,6 @@ class D3Fakebook.LineChart extends D3Fakebook.Chart
               .duration(250)
               .style('opacity', pointOpacity)
           )
-
-    # Do some extra processing to handle R2D3's raphael replacement
-    if points[0] and points[0][0] and points[0][0].raphaelNode?
-      _.each points, (pointGroup) ->
-        _.each pointGroup, (point) ->
-          content = point.domNode['data-content']
-          title   = point.domNode['title']
-          $rNode  = $("[raphaelid='#{point.raphaelNode.id}']")
-
-          $rNode.addClass('data-point')
-                .attr('title', title)
-                .attr('data-content', content)
-                .attr('data-toggle', 'popover')
 
   drawChart : (data, comparison) ->
     @drawAxes(data, comparison)
@@ -223,24 +209,48 @@ class D3Fakebook.LineChart extends D3Fakebook.Chart
   drawYAxis : (isSecond) ->
     isSecond ||= false
 
+    y = if isSecond then @y1 else @y0
+
     xPosition = 0
 
     if isSecond
       yPosition = @opts.yLabelComparisonOffset or @margin.right / 8
       label = @opts.yLabelComparison
     else
-      yPosition = 0 - @opts.yLabelOffset
+      if @opts.yLabelOffset?
+        offset = @opts.yLabelOffset
+      else
+        offset = @margin.left / 8
+
+      yPosition = 0 - offset
       label = @opts.yLabel
 
     translation = if isSecond then "translate(#{@innerWidth}, 0)" else null
-    labelContentText = _.str.words(label, ", ")[0]
-    labelContentText += ',' if _.str.words(label, ", ")[1]
+    labelContentText = label
+    #labelContentText = _.str.words(label, ", ")[0]
+    #labelContentText += ',' if _.str.words(label, ", ")[1]
 
-    labelContent = @svg.append('g')
+    axis = @svg.append('g')
         .attr('class', 'y axis')
-        .call(if isSecond then @yAxisRight else @yAxisLeft)
+
+    axis.call(if isSecond then @yAxisRight else @yAxisLeft)
+        .selectAll('.tick')
+        .data(y.ticks(20), (d) -> d)
+        .exit()
+        .classed('minor', true)
         .attr('transform', translation)
-        .append('text')
+
+    #axis.selectAll('line')
+        #.data(y.ticks(20), (d) -> console.log('d', d); return d)
+        #.enter()
+        #.append('line')
+        #.attr('class', 'minor')
+        #.attr('x1', 0)
+        #.attr('x2', -@innerWidth)
+        #.attr('y1', y)
+        #.attr('y2', y)
+
+    labelContent = axis.append('text')
         .attr('transform', "rotate(-90)translate(#{xPosition}, #{yPosition})")
         .style('text-anchor', 'middle')
         .attr('class', 'chart-label chart-label-y-axis')
@@ -253,7 +263,7 @@ class D3Fakebook.LineChart extends D3Fakebook.Chart
     labelContent.append('tspan')
         .attr('x', '-160')
         .attr('y', if isSecond then '4.4em' else '-3.0em')
-        .text(_.str.words(label, ", ")[1])
+        .text(label)
 
   buildData : ->
     _.each @data, (data) ->
