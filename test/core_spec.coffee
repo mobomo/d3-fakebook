@@ -58,19 +58,6 @@ define [
           expect(chart.title).to.equal 'Chart title'
 
 
-        it 'should set an indicator title if one is provided', ->
-          chart = new D3Fakebook.Core objects.containerNode,
-            title          : 'Chart title'
-
-          expect(chart.indicatorTitle).to.be.a 'undefined'
-
-          chartWithIndicator = new D3Fakebook.Core objects.containerNode,
-            title          : 'Chart title'
-            indicatorTitle : 'Indicator title'
-
-          expect(chartWithIndicator.indicatorTitle).to.equal 'Indicator title'
-
-
         it 'should store data to the instance if provided', ->
           chart = new D3Fakebook.Core objects.containerNode,
             data : objects.data
