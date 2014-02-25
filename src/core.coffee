@@ -2,7 +2,7 @@
 
 window.D3Fakebook = {}
 
-class D3Fakebook.Chart
+class D3Fakebook.Core
   constructor : (el, opts={}) ->
     # Must have an element to put the chart in; throw an error if it is missing.
     unless el

@@ -1,6 +1,6 @@
 'use strict'
 
-class D3Fakebook.BarChartBuilder extends D3Fakebook.Chart
+class D3Fakebook.BarChart extends D3Fakebook.Core
   buildChart: ->
     data = @buildData()
 

@@ -27,16 +27,16 @@
   requirejs.config({
     baseUrl: baseUrl,
     paths: {
-      'd3'               : 'bower_components/d3/d3',
-      'underscore'       : 'bower_components/underscore/underscore',
-      'chart'            : 'src/chart_builder',
-      'line_chart'       : 'src/line_chart_builder',
-      'time_scale_chart' : 'src/time_scale_line_chart',
-      'bar_chart'       : 'src/bar_chart_builder'
+      'd3'                    : 'bower_components/d3/d3',
+      'underscore'            : 'bower_components/underscore/underscore',
+      'core'                  : 'src/core',
+      'line_chart'            : 'src/line_chart',
+      'time_scale_line_chart' : 'src/time_scale_line_chart',
+      'bar_chart'             : 'src/bar_chart'
     },
 
     shim : {
-      'chart' : {
+      'core' : {
         exports : 'D3Fakebook',
         deps : [
           'd3',
@@ -48,10 +48,10 @@
         deps : [
           'd3',
           'underscore',
-          'chart'
+          'core'
         ]
       },
-      'time_scale_chart' : {
+      'time_scale_line_chart' : {
         exports : 'D3Fakebook.TimeScaleLineChart',
         deps : [
           'd3',
@@ -64,7 +64,7 @@
         deps : [
           'd3',
           'underscore',
-          'chart'
+          'core'
         ]
       }
     },

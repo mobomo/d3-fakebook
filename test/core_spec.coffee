@@ -1,7 +1,7 @@
 define [
   'd3'
   'underscore',
-  'chart'
+  'core'
 ], (d3, _) ->
   'use strict'
 
@@ -13,21 +13,21 @@ define [
   objects =
     data : [1,2,3]
 
-  describe 'Chart', ->
+  describe 'Core', ->
     beforeEach(() ->
       domNode = document.createElement 'div'
       objects.containerNode = domNode
-      objects.chart = new D3Fakebook.Chart domNode
+      objects.chart = new D3Fakebook.Core domNode
     )
 
     describe '#new', ->
       it 'should require a DOM node', ->
-        expect(() -> chart = new D3Fakebook.Chart)
+        expect(() -> chart = new D3Fakebook.Core)
           .to.throw Error, 'Fakebook Chart requires a node selector'
 
 
-      it 'should produce an instance of D3Fakebook.Chart', ->
-        expect(objects.chart).to.be.instanceof D3Fakebook.Chart
+      it 'should produce an instance of D3Fakebook.Core', ->
+        expect(objects.chart).to.be.instanceof D3Fakebook.Core
 
 
       it 'should set margins', ->
@@ -52,19 +52,19 @@ define [
 
 
         it 'should set a title if one is provided', ->
-          chart = new D3Fakebook.Chart objects.containerNode,
+          chart = new D3Fakebook.Core objects.containerNode,
             title : 'Chart title'
 
           expect(chart.title).to.equal 'Chart title'
 
 
         it 'should set an indicator title if one is provided', ->
-          chart = new D3Fakebook.Chart objects.containerNode,
+          chart = new D3Fakebook.Core objects.containerNode,
             title          : 'Chart title'
 
           expect(chart.indicatorTitle).to.be.a 'undefined'
 
-          chartWithIndicator = new D3Fakebook.Chart objects.containerNode,
+          chartWithIndicator = new D3Fakebook.Core objects.containerNode,
             title          : 'Chart title'
             indicatorTitle : 'Indicator title'
 
@@ -72,7 +72,7 @@ define [
 
 
         it 'should store data to the instance if provided', ->
-          chart = new D3Fakebook.Chart objects.containerNode,
+          chart = new D3Fakebook.Core objects.containerNode,
             data : objects.data
 
           expect(chart.data).to.be.a 'array'
@@ -121,7 +121,7 @@ define [
         chartNoTitle = objects.chart
         expect(chartNoTitle.getTitle()).to.be.a 'undefined'
 
-        chart = new D3Fakebook.Chart objects.containerNode,
+        chart = new D3Fakebook.Core objects.containerNode,
           title : 'Chart title'
         expect(chart.getTitle()).to.be.a 'string'
         expect(chart.getTitle()).to.equal 'Chart title'

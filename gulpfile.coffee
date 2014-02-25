@@ -29,7 +29,7 @@ gulp.task 'build', ['coffee']
 
 gulp.task 'coffee', ->
   # Minify and package up all JS files
-  return gulp.src(['./src/chart_builder.coffee', './src/*.coffee'])
+  return gulp.src(['./src/core.coffee', './src/*.coffee'])
     .pipe(lint())
     .pipe(lint.reporter())
     .pipe(concat('d3-fakebook.coffee'))
@@ -39,10 +39,6 @@ gulp.task 'coffee', ->
     .pipe(uglify())
     .pipe(gulp.dest paths.dist)
     .pipe(livereload())
-
-gulp.task 'copy-build-file', ->
-  return gulp.src('./src/build.js')
-    .pipe(gulp.dest paths.dist)
 
 gulp.task 'watch', ->
   server = livereload()

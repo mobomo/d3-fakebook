@@ -1,7 +1,7 @@
 define [
   'd3',
   'underscore',
-  'time_scale_chart'
+  'time_scale_line_chart'
 ], (d3, _) ->
   window.d3 = d3
   window._ = _
