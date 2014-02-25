@@ -81,6 +81,7 @@ class D3Fakebook.Chart
 
   render : ->
     @createContainer()
+    @buildChart()
 
   # Private method to set the color scale for the chart. Will set up to two
   # scales (to support dual-y-axis charts). It will check for the presence of

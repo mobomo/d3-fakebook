@@ -50,7 +50,8 @@
     }
 
     Chart.prototype.render = function() {
-      return this.createContainer();
+      this.createContainer();
+      return this.buildChart();
     };
 
     Chart.prototype._setColorScale = function(colors, data) {
@@ -241,21 +242,13 @@
       });
       countries = this.setCountries(this.color, data);
       categories = d3.keys(data[0]).filter(function(key) {
-        return key !== 'year' && key !== 'values';
+        return key !== 'date' && key !== 'values';
       });
       this.x0.domain(data.map(function(d) {
-        return d.year;
+        return d.date;
       }));
       this.x1.domain(categories).rangeRoundBands([0, this.x0.rangeBand()]);
       this.y.domain([minVal, maxVal]);
-      setTimeout(function() {
-        return $('.chart-bar').popover({
-          container: 'body',
-          html: true,
-          trigger: 'manual',
-          placement: 'top'
-        }, 10);
-      });
       return this.drawChart(data);
     };
 
@@ -310,24 +303,24 @@
     };
 
     BarChartBuilder.prototype.buildData = function() {
-      var data, values, years;
+      var data, dates, values;
       data = this.data;
-      years = _.keys(data);
+      dates = _.keys(data);
       values = _.values(data);
-      _(years).each(function(year) {
-        data[year].values = [];
-        return _(data[year]).each(function(v, k) {
+      _(dates).each(function(date) {
+        data[date].values = [];
+        return _(data[date]).each(function(v, k) {
           var obj;
-          if (!(k === 'year' || k === 'values' || _(v).isNaN())) {
+          if (!(k === 'date' || k === 'values' || _(v).isNaN())) {
             obj = {
               name: k,
               value: +v,
-              year: +data[year].year
+              date: +data[date].date
             };
             if (k === 'World') {
-              return data[year].values.unshift(obj);
+              return data[date].values.unshift(obj);
             } else {
-              return data[year].values.push(obj);
+              return data[date].values.push(obj);
             }
           }
         });
@@ -338,12 +331,11 @@
     BarChartBuilder.prototype.drawChart = function(data) {
       this.drawAxes();
       this.drawBars(data);
-      this.drawLegend();
       return this.drawTitle();
     };
 
     BarChartBuilder.prototype.drawBars = function(data) {
-      var format, year;
+      var date, format;
       format = function(val) {
         var formatter, value;
         formatter = d3.format('n');
@@ -353,12 +345,12 @@
         }
         return value;
       };
-      year = this.svg.selectAll('.year').data(data).enter().append('g').attr('class', 'g').attr('transform', (function(_this) {
+      date = this.svg.selectAll('.date').data(data).enter().append('g').attr('class', 'g').attr('transform', (function(_this) {
         return function(d) {
-          return 'translate(' + _this.x0(d.year) + ',0)';
+          return 'translate(' + _this.x0(d.date) + ',0)';
         };
       })(this));
-      return year.selectAll('rect').data(function(d) {
+      return date.selectAll('rect').data(function(d) {
         return d.values;
       }).enter().append('rect').attr('class', 'chart-bar').attr('width', this.x1.rangeBand()).attr('x', (function(_this) {
         return function(d) {
@@ -386,13 +378,9 @@
         };
       })(this)).attr('data-toggle', 'popover').attr('data-content', (function(_this) {
         return function(d) {
-          return "<strong style=\"color: " + (_this.color(d.name)) + ";\"> " + (format(parseFloat(d.value, 10).round2())) + " #</strong> " + d.year;
+          return "<strong style=\"color: " + (_this.color(d.name)) + ";\"> " + (format(_this.utils.round2(d.value))) + " #</strong> " + d.date;
         };
-      })(this)).on('mouseover', function(d) {
-        return $(this).popover('show');
-      }).on('mouseout', function(d) {
-        return $(this).popover('hide');
-      });
+      })(this));
     };
 
     BarChartBuilder.prototype.drawAxes = function() {
@@ -408,8 +396,7 @@
       var labelContent, yPosition;
       yPosition = 0 - this.opts.yLabelOffset || this.margin.left / 6;
       labelContent = this.svg.append('g').attr('class', 'y axis').call(this.yAxis).append('text').attr('transform', "rotate(-90)translate(" + 0 + ", " + yPosition + ")").style('text-anchor', 'middle').attr('class', 'chart-label chart-label-y-axis');
-      labelContent.append('tspan').attr('x', '-160').attr('y', '-4.2em').text("" + (_.str.words(this.opts.yLabel, ", ")[0]));
-      return labelContent.append('tspan').attr('x', '-160').attr('y', '-3.0em').text(_.str.words(this.opts.yLabel, ", ")[1]);
+      return labelContent.append('tspan').attr('x', '-160').attr('y', '-4.2em').text("" + this.opts.yLabel);
     };
 
     return BarChartBuilder;
@@ -511,11 +498,6 @@
     function TimeScaleLineChart() {
       return TimeScaleLineChart.__super__.constructor.apply(this, arguments);
     }
-
-    TimeScaleLineChart.prototype.render = function() {
-      this.createContainer();
-      return this.buildChart();
-    };
 
     TimeScaleLineChart.prototype.buildChart = function() {
       var allData, data, dataComparison, hasData;

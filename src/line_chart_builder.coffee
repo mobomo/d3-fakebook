@@ -1,10 +1,6 @@
 'use strict'
 
 class D3Fakebook.LineChart extends D3Fakebook.Chart
-#  render : ->
-#    @createContainer()
-#    @buildChart()
-#
 #  buildChart: ->
 #    allData = @buildData()
 #    data  = allData[0]

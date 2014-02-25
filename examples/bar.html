@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Line Chart Demonstrations</title>
+  <link rel="stylesheet" href="./d3-fakebook.css">
+  <style>
+    /* Page-specific styles */
+    html, body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    .wrapper {
+      width: 98%;
+      margin: 0 auto;
+    }
+
+    p {
+      margin: 20px 0;
+    }
+
+    pre {
+      margin: 20px 0;
+      overflow-x: auto;
+      background-color: #fafafa;
+      padding: 10px;
+      border: 1px dashed rgba(0,0,0,0.1);
+      -webkit-box-sizing: border-box;
+         -moz-box-sizing: border-box;
+              box-sizing: border-box;
+    }
+
+    .chart {
+      margin: 20px 0;
+    }
+
+    #singleLine.chart path {
+      stroke-width: 2;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <h1>Bar Chart Examples</h1>
+    <div id="multiBar" class="chart"></div>
+    <!--<div id="singleLine" class="chart"></div>-->
+  </div>
+
+  <script src="../bower_components/d3/d3.js"></script>
+  <script src="../bower_components/underscore/underscore.js"></script>
+  <script src="../dist/d3-fakebook.js"></script>
+  <script>
+    var multiBar = new D3Fakebook.BarChartBuilder('#multiBar', {
+      data : [{"date":1950,"Argentina":308.29976619843194,"Australia":150.00564340528945,"Austria":358.7474395689033,"World":259.463896776797,"values":[{"name":"World","value":259.463896776797,"date":1950},{"name":"Argentina","value":308.29976619843194,"date":1950},{"name":"Australia","value":150.00564340528945,"date":1950},{"name":"Austria","value":358.7474395689033,"date":1950}]},{"date":2011,"Argentina":130.54065990171677,"Australia":36.07402936147343,"Austria":37.230623495289784,"World":96.63891279601752,"values":[{"name":"World","value":96.63891279601752,"date":2011},{"name":"Argentina","value":130.54065990171677,"date":2011},{"name":"Australia","value":36.07402936147343,"date":2011},{"name":"Austria","value":37.230623495289784,"date":2011}]}],
+      yLabel : 'Hours worked per worker average annual'
+    });
+    multiBar.render();
+    //var chart0 = new D3Fakebook.LineChart('#simpleLine', {
+    //  data : [[1,4], [4,3], [8,5], [9,7], [2,8], [1,7], [8,2], [5,2], [5,3], [9,0]]
+    //});
+    //chart0.render();
+
+    // From the D3 Basic Line Chart example: http://bl.ocks.org/mbostock/3883245
+    //d3.tsv('./data/aapl_stock.tsv', function(error, data) {
+    //  if (error) {
+    //    console.error(error);
+    //  } else {
+    //    var chart1 = new D3Fakebook.TimeScaleLineChart('#singleLine', {
+    //      data : data,
+    //      valueName : 'close',
+    //      showPoints : false
+    //    });
+    //    chart1.render();
+    //  }
+    //});
+  </script>
+</body>
+</html>

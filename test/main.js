@@ -31,7 +31,8 @@
       'underscore'       : 'bower_components/underscore/underscore',
       'chart'            : 'src/chart_builder',
       'line_chart'       : 'src/line_chart_builder',
-      'time_scale_chart' : 'src/time_scale_line_chart'
+      'time_scale_chart' : 'src/time_scale_line_chart',
+      'bar_chart'       : 'src/bar_chart_builder'
     },
 
     shim : {
@@ -58,6 +59,14 @@
           'line_chart'
         ]
       },
+      'bar_chart' : {
+        exports : 'D3Fakebook.BarChart',
+        deps : [
+          'd3',
+          'underscore',
+          'chart'
+        ]
+      }
     },
 
     // ask Require.js to load these files (all our tests)

@@ -45,21 +45,11 @@ class D3Fakebook.BarChartBuilder extends D3Fakebook.Chart
     countries = @setCountries @color, data
 
     categories = d3.keys(data[0]).filter (key) ->
-      key isnt 'year' and key isnt 'values'
+      key isnt 'date' and key isnt 'values'
 
-    @x0.domain data.map((d) -> d.year)
+    @x0.domain data.map((d) -> d.date)
     @x1.domain(categories).rangeRoundBands([0, @x0.rangeBand()])
     @y.domain([minVal, maxVal])
-
-    # NOTE: timer is necessary to ensure that the nodes are in the DOM when
-    # this event listener is initialized
-    setTimeout ->
-      $('.chart-bar').popover
-        container : 'body'
-        html      : true
-        trigger   : 'manual'
-        placement : 'top'
-      , 10
 
     @drawChart data
 
@@ -112,28 +102,28 @@ class D3Fakebook.BarChartBuilder extends D3Fakebook.Chart
 
   buildData : ->
     data   = @data
-    years  = _.keys data
+    dates  = _.keys data
     values = _.values data
-    _(years).each (year) ->
-      data[year].values = []
-      _(data[year]).each (v, k) ->
-        unless k is 'year' or k is 'values' or _(v).isNaN()
+    _(dates).each (date) ->
+      data[date].values = []
+      _(data[date]).each (v, k) ->
+        unless k is 'date' or k is 'values' or _(v).isNaN()
           obj =
             name  : k
             value : +v
-            year  : +data[year].year
+            date  : +data[date].date
 
           if k is 'World'
-            data[year].values.unshift obj
+            data[date].values.unshift obj
           else
-            data[year].values.push obj
+            data[date].values.push obj
 
     data
 
   drawChart : (data) ->
     @drawAxes()
     @drawBars(data)
-    @drawLegend()
+    #@drawLegend()
     @drawTitle()
 
   drawBars : (data) ->
@@ -144,13 +134,13 @@ class D3Fakebook.BarChartBuilder extends D3Fakebook.Chart
         value = '0'
       value
 
-    year = @svg.selectAll('.year')
+    date = @svg.selectAll('.date')
               .data(data)
               .enter().append('g')
               .attr('class', 'g')
-              .attr('transform', (d) => 'translate(' + @x0(d.year) + ',0)')
+              .attr('transform', (d) => 'translate(' + @x0(d.date) + ',0)')
 
-    year.selectAll('rect')
+    date.selectAll('rect')
         .data((d) -> d.values)
         .enter().append('rect')
         .attr('class', 'chart-bar')
@@ -165,11 +155,9 @@ class D3Fakebook.BarChartBuilder extends D3Fakebook.Chart
         .attr('data-toggle', 'popover')
         .attr('data-content', (d) =>
           "<strong style=\"color: #{@color d.name};\">
-          #{format parseFloat(d.value, 10).round2()}
-          #</strong> #{d.year}"
+          #{format @utils.round2(d.value)}
+          #</strong> #{d.date}"
         )
-        .on('mouseover', (d) -> $(this).popover 'show')
-        .on('mouseout', (d) -> $(this).popover 'hide')
 
   drawAxes : () ->
     @drawXAxis()
@@ -195,9 +183,10 @@ class D3Fakebook.BarChartBuilder extends D3Fakebook.Chart
     labelContent.append('tspan')
         .attr('x', '-160')
         .attr('y', '-4.2em')
-        .text("#{_.str.words(@opts.yLabel, ", ")[0]}")
+        #.text("#{_.str.words(@opts.yLabel, ", ")[0]}")
+        .text("#{@opts.yLabel}")
 
-    labelContent.append('tspan')
-        .attr('x', '-160')
-        .attr('y', '-3.0em')
-        .text(_.str.words(@opts.yLabel, ", ")[1])
+    #labelContent.append('tspan')
+        #.attr('x', '-160')
+        #.attr('y', '-3.0em')
+        #.text(_.str.words(@opts.yLabel, ", ")[1])

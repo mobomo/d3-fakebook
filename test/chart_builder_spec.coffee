@@ -127,8 +127,12 @@ define [
         expect(chart.getTitle()).to.equal 'Chart title'
 
     describe '#render', ->
+      it 'should call createContainer'
+      it 'should call buildChart'
+
+    describe '#createContainer', ->
       it 'should put an SVG in the node', ->
         chart = objects.chart
-        chart.render()
+        chart.createContainer()
         svg = d3.select(chart.el).select('svg')
         expect(svg[0][0].tagName).to.equal 'svg'

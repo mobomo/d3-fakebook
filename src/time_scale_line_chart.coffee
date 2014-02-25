@@ -1,10 +1,6 @@
 'use strict'
 
 class D3Fakebook.TimeScaleLineChart extends D3Fakebook.LineChart
-  render : ->
-    @createContainer()
-    @buildChart()
-
   buildChart: ->
     allData        = _.compact @buildData()
     data           = allData[0]
