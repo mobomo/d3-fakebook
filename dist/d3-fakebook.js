@@ -425,68 +425,6 @@
       return LineChart.__super__.constructor.apply(this, arguments);
     }
 
-    LineChart.prototype.render = function() {
-      this.createContainer();
-      return this.buildChart();
-    };
-
-    LineChart.prototype.buildChart = function() {
-      var allData, data, dataComparison, datasets, datasetsComparison, xValues, y0Values, y1Values;
-      allData = this.buildData();
-      data = allData[0];
-      dataComparison = allData[1];
-      _(allData.length).times((function(_this) {
-        return function(i) {
-          var colors;
-          colors = _this.chartColors;
-          return _this._setColorScale(colors, allData[i]);
-        };
-      })(this));
-      this.x = d3.scale.linear().range([0, this.innerWidth]);
-      this.y0 = d3.scale.linear().range([this.innerHeight, 0]);
-      this.y1 = d3.scale.linear().range([this.innerHeight, 0]);
-      this.xAxis = this.createAxis('x', this.x, 'bottom');
-      this.yAxisLeft = this.createAxis('y0', this.y0, 'left', {
-        size: 0 - this.innerWidth
-      });
-      this.yAxisRight = this.createAxis('y1', this.y1, 'right');
-      datasets = this.setDatasets(this.color, data);
-      if (dataComparison) {
-        datasetsComparison = this.setDatasets(this.colorAlt, dataComparison);
-      }
-      xValues = [];
-      y0Values = [];
-      y1Values = [];
-      _(data).each(function(v, k) {
-        return _(data[k]).each(function(d) {
-          xValues.push(d[0]);
-          return y0Values.push(d[1]);
-        });
-      });
-      if (dataComparison && dataComparison.length) {
-        _(dataComparison).each(v, k)(function() {
-          return _(data[k]).each(function(d) {
-            return y1Values.push(d[1]);
-          });
-        });
-      }
-      this.x.domain(d3.extent(xValues));
-      this.setDomain(this.y0, this.findMin(y0Values), this.findMax(y0Values));
-      if (dataComparison) {
-        this.setDomain(this.y1, this.findMin(y1Values), this.findMax(y1Values));
-      }
-      return this.drawChart(datasets, datasetsComparison);
-    };
-
-    LineChart.prototype.setDatasets = function(scale, data) {
-      return scale.domain().map(function(name) {
-        return {
-          name: name,
-          values: data[name]
-        };
-      });
-    };
-
     LineChart.prototype.setDomain = function(axis, min, max) {
       if (!(min < 0 || min > 10)) {
         min = 0;
@@ -510,74 +448,6 @@
         this.setTickFormat(axis);
       }
       return axis;
-    };
-
-    LineChart.prototype.findMin = function(data) {
-      return d3.min(data);
-    };
-
-    LineChart.prototype.findMax = function(data) {
-      return d3.max(data);
-    };
-
-    LineChart.prototype.drawLines = function(dataset, x, y, color, isComparison) {
-      var legendAttr, legendColorAttr, line, lines, pointOpacity, pointRadius, points, pointsGroup, series, transitionDuration;
-      isComparison || (isComparison = false);
-      line = d3.svg.line().defined(function(d) {
-        if (d) {
-          return !_.isNaN(d[0]) && !_.isNaN(d[1]);
-        }
-      }).x(function(d) {
-        return x(d[0]);
-      }).y(function(d) {
-        return y(d[1]);
-      });
-      lines = this.svg.selectAll('.datasets').data(dataset);
-      series = lines.enter().append('g').attr('class', 'series');
-      legendAttr = "data-legend" + (isComparison ? '-comparison' : void 0);
-      legendColorAttr = 'data-legend-color';
-      series.append('path').attr('class', 'line').attr('d', function(d) {
-        return line(d.values);
-      }).attr(legendAttr, function(d) {
-        return d.name;
-      }).attr(legendColorAttr, function(d) {
-        return color(d.name);
-      }).style('stroke', function(d) {
-        return color(d.name);
-      }).style('stroke-dasharray', isComparison ? '5, 5' : null);
-      pointRadius = 5.2;
-      transitionDuration = 1000;
-      pointOpacity = 0.4;
-      pointsGroup = this.svg.append('g');
-      points = series.selectAll('.data-point').data(function(d) {
-        var filtered;
-        filtered = _.filter(d.values, function(data) {
-          return !_.isNaN(data[0]) && !_.isNaN(data[1]);
-        });
-        _(filtered).each(function(f) {
-          return f.push(d.name);
-        });
-        return filtered;
-      });
-      return points.enter().append('circle').attr('class', 'data-point').style('opacity', pointOpacity).attr('cx', function(d) {
-        return x(d[0]);
-      }).attr('cy', function(d) {
-        return y(d[1]);
-      }).attr('r', function() {
-        return pointRadius;
-      }).attr('title', function(d) {
-        return d[2];
-      }).attr('data-toggle', 'popover').attr('data-content', (function(_this) {
-        return function(d) {
-          return "X: " + (_this.utils.round2(d[0])) + " <br /> Y: " + (_this.utils.round2(d[1]));
-        };
-      })(this)).style('fill', function(d, i) {
-        return color(d[2]);
-      }).on('mouseover', function(d) {
-        return d3.select(this).transition().duration(250).style('opacity', 1);
-      }).on('mouseout', function(d) {
-        return d3.select(this).transition().duration(250).style('opacity', pointOpacity);
-      });
     };
 
     LineChart.prototype.drawChart = function(data, comparison) {
@@ -627,54 +497,6 @@
       labelContent = axis.append('text').attr('transform', "rotate(-90)translate(" + xPosition + ", " + yPosition + ")").style('text-anchor', 'middle').attr('class', 'chart-label chart-label-y-axis');
       labelContent.append('tspan').attr('x', '-160').attr('y', isSecond ? '3.2em' : '-4.2em').text();
       return labelContent.append('tspan').attr('x', '-160').attr('y', isSecond ? '4.4em' : '-3.0em').text(label);
-    };
-
-    LineChart.prototype._nestData = function(data, isComparison, primaryData) {
-      var dataset, datasets, maxYear, minYear, primaryKey;
-      isComparison || (isComparison = false);
-      if (primaryData) {
-        minYear = this.findMin(primaryData, 'date');
-        minYear = new Date(minYear).getFullYear();
-        maxYear = this.findMax(primaryData, 'date');
-        maxYear = new Date(maxYear).getFullYear();
-      }
-      dataset = isComparison ? 'dataComparison' : 'data';
-      datasets = _.chain(data).compact().value();
-      if ((datasets != null) && datasets.length) {
-        datasets = _.flatten(datasets);
-      }
-      datasets = _.reject(datasets, function(d) {
-        return _.isNaN(d.datum);
-      });
-      if ((maxYear != null) && (minYear != null)) {
-        datasets = _.reject(datasets, function(d) {
-          var date;
-          date = new Date(d.date).getFullYear();
-          return date < minYear || date > maxYear;
-        });
-      }
-      primaryKey = this.opts.valueName;
-      return d3.nest().key(function(d) {
-        return d[primaryKey];
-      }).entries(datasets);
-    };
-
-    LineChart.prototype.buildData = function() {
-      var parsedData, parsedDataComparison;
-      _.each(this.data, function(data) {
-        return _.map(data, function(v, k) {
-          if (k === 'date') {
-            return data[k] = new Date(v);
-          } else {
-            return data[k] = +v;
-          }
-        });
-      });
-      parsedData = this._nestData(this.data, false);
-      if (this.opts.dualY) {
-        parsedDataComparison = this._nestData(this.data, true, parsedData);
-      }
-      return [parsedData, parsedDataComparison];
     };
 
     return LineChart;
