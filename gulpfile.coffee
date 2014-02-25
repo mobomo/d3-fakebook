@@ -9,6 +9,7 @@ karma        = require 'gulp-karma'
 lint         = require 'gulp-coffeelint'
 rename       = require 'gulp-rename'
 uglify       = require 'gulp-uglify'
+livereload   = require 'gulp-livereload'
 
 paths  =
   scripts: ['./src/*.coffee']
@@ -26,7 +27,7 @@ gulp.task 'clean', ->
 
 gulp.task 'build', ['coffee']
 
-gulp.task 'coffee', ['clean'], ->
+gulp.task 'coffee', ->
   # Minify and package up all JS files
   return gulp.src(['./src/chart_builder.coffee', './src/*.coffee'])
     .pipe(lint())
@@ -37,13 +38,18 @@ gulp.task 'coffee', ['clean'], ->
     .pipe(rename {suffix: '.min'})
     .pipe(uglify())
     .pipe(gulp.dest paths.dist)
+    .pipe(livereload())
 
 gulp.task 'copy-build-file', ->
   return gulp.src('./src/build.js')
     .pipe(gulp.dest paths.dist)
 
 gulp.task 'watch', ->
+  server = livereload()
+
   gulp.watch paths.scripts, ['coffee']
+  gulp.watch("#{paths.dist}/**").on 'change', (file) ->
+    server.changed file.path
 
 gulp.task 'autotest', ->
   # pass in a non-existent file to the gulp pipe because the karma plugin
