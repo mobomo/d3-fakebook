@@ -25,7 +25,9 @@ gulp.task 'lint', ->
 gulp.task 'clean', ->
   return gulp.src(paths.dist, {read: false}).pipe clean()
 
-gulp.task 'build', ['coffee']
+gulp.task 'build', ['coffee'], ->
+  return gulp.src(['./bower_components/d3/d3.min.js', './bower_components/underscore/underscore.js'])
+    .pipe(gulp.dest paths.dist)
 
 gulp.task 'coffee', ->
   # Minify and package up all JS files

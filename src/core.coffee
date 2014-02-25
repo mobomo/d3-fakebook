@@ -45,9 +45,6 @@ class D3Fakebook.Core
       '#9edae5'
     ]
 
-    if opts.indicatorTitle
-      @indicatorTitle = opts.indicatorTitle
-
     if opts.data?
       @data = opts.data
 

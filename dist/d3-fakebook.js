@@ -3,14 +3,207 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  D3Fakebook.BarChartBuilder = (function(_super) {
-    __extends(BarChartBuilder, _super);
+  window.D3Fakebook = {};
 
-    function BarChartBuilder() {
-      return BarChartBuilder.__super__.constructor.apply(this, arguments);
+  D3Fakebook.Core = (function() {
+    function Core(el, opts) {
+      var error, _base, _defaultDimensions, _margin;
+      if (opts == null) {
+        opts = {};
+      }
+      if (!el) {
+        error = new Error('Fakebook Chart requires a node selector');
+        error.name = 'ArgumentError';
+        throw error;
+      }
+      this.opts = opts;
+      (_base = this.opts).valueName || (_base.valueName = 'value');
+      this.el = d3.select(el)[0][0];
+      this.$el = d3.select(this.el);
+      this.title = opts.title;
+      if (_.isUndefined(this.opts.showPoints)) {
+        this.opts.showPoints = true;
+      }
+      this.chartColors = this.opts.colors || ['#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#d62728', '#ff9896', '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5'];
+      if (opts.data != null) {
+        this.data = opts.data;
+      }
+      _margin = {
+        top: 80,
+        right: 100,
+        bottom: 80,
+        left: 100
+      };
+      this.margin = _.extend(_margin, this.opts.margin);
+      delete this.opts.margin;
+      _defaultDimensions = {
+        height: window.innerHeight < 480 ? 500 : this.el.offsetHeight,
+        width: window.innerWidth < 480 ? 900 : this.el.offsetWidth
+      };
+      this.dimensions = _.extend(_defaultDimensions, this.opts.dimensions);
+      delete this.opts.dimensions;
+      this.innerWidth = this.dimensions.width - this.margin.left - this.margin.right;
+      this.innerHeight = this.dimensions.height - this.margin.top - this.margin.bottom;
     }
 
-    BarChartBuilder.prototype.buildChart = function() {
+    Core.prototype.render = function() {
+      this.createContainer();
+      return this.buildChart();
+    };
+
+    Core.prototype._setColorScale = function(colors, data) {
+      var chartColors, colorScale, values;
+      chartColors = _.clone(colors);
+      if (data) {
+        if (_.isArray(data)) {
+          values = d3.values(data[0]);
+        }
+      }
+      if (this.opts.positions) {
+        _(this.opts.positions.length).times((function(_this) {
+          return function(index) {
+            if (!_(_this.opts.positions).contains(index)) {
+              return chartColors.splice(index, 1);
+            }
+          };
+        })(this));
+      }
+      colorScale = d3.scale.category20();
+      if (this.color != null) {
+        return this.colorAlt = colorScale;
+      } else {
+        return this.color = colorScale;
+      }
+    };
+
+    Core.prototype.setTickFormat = function(axis) {
+      return axis.tickFormat((function(_this) {
+        return function(d) {
+          return _this.formatValues(d);
+        };
+      })(this));
+    };
+
+    Core.prototype.formatValues = function(datum) {
+      var format, formatted, number;
+      number = d3.round(datum, 5);
+      format = d3.format(',s');
+      formatted = format(number);
+      if (formatted === '-0') {
+        formatted = '0';
+      }
+      return formatted;
+    };
+
+    Core.prototype.displayNotice = function(heading, message) {
+      return this.el.innerHTML = "<div class=\"chart-notice\"> <h4 class=\"chart-notice-title\">" + heading + "</h4> <p class=\"chart-notice-content\">" + message + "</p></div>";
+    };
+
+    Core.prototype.createContainer = function() {
+      var boxHeight, boxWidth;
+      boxHeight = this.dimensions.height + (this.title ? 40 : 0);
+      boxWidth = this.dimensions.width;
+      return this.svg = d3.select(this.el).append('svg').attr('width', this.dimensions.width).attr('height', this.dimensions.height + (this.title ? 40 : 0)).attr('viewBox', "0 0 " + boxWidth + " " + boxHeight).attr('perserveaspectratio', 'xMinYMid').append('g').attr('transform', "translate(" + this.margin.left + ", " + this.margin.top + ")");
+    };
+
+    Core.prototype.getTitle = function() {
+      return this.title;
+    };
+
+    Core.prototype._getLegendVerticalOffset = function(showLabels) {
+      var height, offset;
+      height = this.dimensions.height;
+      offset = this.margin.top;
+      if (this.opts.legendOffset) {
+        offset += this.opts.legendOffset;
+      } else {
+        if (showLabels) {
+          offset += 20;
+        } else {
+          offset = offset;
+        }
+      }
+      if (showLabels && !this.isLargeScreen) {
+        offset += this.smallScreenOffset;
+      }
+      return height - offset;
+    };
+
+    Core.prototype.drawLegend = function(labels) {
+      var chartInnerWidth, chartWidth, left, primaryLabel, primaryLabelText, secondaryLabel, secondaryLabelText, top;
+      if (this.opts.showLegend !== false) {
+        if (this.opts.yLabel != null) {
+          primaryLabelText = this.opts.yLabel.split(',')[0];
+        } else {
+          primaryLabelText = this.opts.legendTitle;
+        }
+        if (this.opts.yLabelComparison != null) {
+          secondaryLabelText = _.str.strLeftBack(this.opts.yLabelComparison, ', ');
+        } else {
+          secondaryLabelText = null;
+        }
+        primaryLabel = primaryLabelText;
+        secondaryLabel = secondaryLabelText;
+        top = this._getLegendVerticalOffset(secondaryLabel != null);
+        left = secondaryLabel ? 20 : 0;
+        this.svg.append('g').attr('class', 'legend').attr('transform', "translate(" + left + ", " + top + ")").style('font-size', '12px').call(d3.legend);
+        if (secondaryLabel) {
+          chartWidth = this.dimensions.width;
+          chartInnerWidth = this.dimensions.width - this.margin.right - this.margin.left;
+          this.svg.selectAll('.legend-items').each(function() {
+            var self;
+            self = d3.select(this);
+            return self.append('text').text(primaryLabel).attr('transform', 'translate(-30, -20)').style('font-size', '10px').style('font-weight', 'bold');
+          });
+          return this.svg.selectAll('.legend-items-comparison').each(function() {
+            var outerWidth, self;
+            self = d3.select(this);
+            self.append('text').text(secondaryLabel).attr('transform', "translate(-30, -20)").style('font-size', '10px').style('font-weight', 'bold');
+            outerWidth = parseInt($('.legend-items-comparison').outerWidth(), 10);
+            left = chartInnerWidth - (chartInnerWidth / 2) + 20;
+            top = 0;
+            return self.attr('transform', "translate(" + left + ", " + top + ")");
+          });
+        }
+      }
+    };
+
+    Core.prototype.drawTitle = function() {
+      return this.svg.append('text').attr('x', (this.dimensions.width - this.margin.left - this.margin.right) / 2).attr('y', 0 - (this.margin.top / 2)).attr('text-anchor', 'middle').attr('class', 'chart-title').text((function(_this) {
+        return function() {
+          var title;
+          title = _this.getTitle();
+          if (title) {
+            return title;
+          } else {
+            return null;
+          }
+        };
+      })(this));
+    };
+
+    Core.prototype.utils = {
+      round2: function(num) {
+        num = parseFloat(num, 10);
+        +num.toFixed(2).replace(/\.00$/, '');
+        return num;
+      }
+    };
+
+    return Core;
+
+  })();
+
+  'use strict';
+
+  D3Fakebook.BarChart = (function(_super) {
+    __extends(BarChart, _super);
+
+    function BarChart() {
+      return BarChart.__super__.constructor.apply(this, arguments);
+    }
+
+    BarChart.prototype.buildChart = function() {
       var categories, colors, countries, data, hasData, maxVal, minVal, _maxVal, _minVal;
       data = this.buildData();
       hasData = false;
@@ -56,7 +249,7 @@
       return this.drawChart(data);
     };
 
-    BarChartBuilder.prototype.findMin = function(data) {
+    BarChart.prototype.findMin = function(data) {
       var min;
       min = d3.min(data, function(d) {
         return d3.min(d.values, function(d) {
@@ -66,7 +259,7 @@
       return Math.min(0, min);
     };
 
-    BarChartBuilder.prototype.findMax = function(data) {
+    BarChart.prototype.findMax = function(data) {
       var max;
       max = d3.max(data, function(d) {
         return d3.max(d.values, function(d) {
@@ -76,7 +269,7 @@
       return max;
     };
 
-    BarChartBuilder.prototype.createAxis = function(plane, scale, position, ticks) {
+    BarChart.prototype.createAxis = function(plane, scale, position, ticks) {
       var axis, _ticks;
       _ticks = {
         count: 10,
@@ -97,7 +290,7 @@
       return axis;
     };
 
-    BarChartBuilder.prototype.setCountries = function(scale, data) {
+    BarChart.prototype.setCountries = function(scale, data) {
       return scale.domain().map(function(name) {
         return {
           name: name,
@@ -106,7 +299,7 @@
       });
     };
 
-    BarChartBuilder.prototype.buildData = function() {
+    BarChart.prototype.buildData = function() {
       var data, dates, values;
       data = this.data;
       dates = _.keys(data);
@@ -132,13 +325,13 @@
       return data;
     };
 
-    BarChartBuilder.prototype.drawChart = function(data) {
+    BarChart.prototype.drawChart = function(data) {
       this.drawAxes();
       this.drawBars(data);
       return this.drawTitle();
     };
 
-    BarChartBuilder.prototype.drawBars = function(data) {
+    BarChart.prototype.drawBars = function(data) {
       var date, format;
       format = function(val) {
         var formatter, value;
@@ -187,221 +380,25 @@
       })(this));
     };
 
-    BarChartBuilder.prototype.drawAxes = function() {
+    BarChart.prototype.drawAxes = function() {
       this.drawXAxis();
       return this.drawYAxis();
     };
 
-    BarChartBuilder.prototype.drawXAxis = function() {
+    BarChart.prototype.drawXAxis = function() {
       return this.svg.append('g').attr('class', 'x axis').attr('transform', 'translate(0,' + this.innerHeight + ')').call(this.xAxis);
     };
 
-    BarChartBuilder.prototype.drawYAxis = function() {
+    BarChart.prototype.drawYAxis = function() {
       var labelContent, yPosition;
       yPosition = 0 - this.opts.yLabelOffset || this.margin.left / 6;
       labelContent = this.svg.append('g').attr('class', 'y axis').call(this.yAxis).append('text').attr('transform', "rotate(-90)translate(" + 0 + ", " + yPosition + ")").style('text-anchor', 'middle').attr('class', 'chart-label chart-label-y-axis');
       return labelContent.append('tspan').attr('x', '-160').attr('y', '-4.2em').text("" + this.opts.yLabel);
     };
 
-    return BarChartBuilder;
+    return BarChart;
 
-  })(D3Fakebook.Chart);
-
-  'use strict';
-
-  window.D3Fakebook = {};
-
-  D3Fakebook.Chart = (function() {
-    function Chart(el, opts) {
-      var error, _base, _defaultDimensions, _margin;
-      if (opts == null) {
-        opts = {};
-      }
-      if (!el) {
-        error = new Error('Fakebook Chart requires a node selector');
-        error.name = 'ArgumentError';
-        throw error;
-      }
-      this.opts = opts;
-      (_base = this.opts).valueName || (_base.valueName = 'value');
-      this.el = d3.select(el)[0][0];
-      this.$el = d3.select(this.el);
-      this.title = opts.title;
-      if (_.isUndefined(this.opts.showPoints)) {
-        this.opts.showPoints = true;
-      }
-      this.chartColors = this.opts.colors || ['#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#d62728', '#ff9896', '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5'];
-      if (opts.indicatorTitle) {
-        this.indicatorTitle = opts.indicatorTitle;
-      }
-      if (opts.data != null) {
-        this.data = opts.data;
-      }
-      _margin = {
-        top: 80,
-        right: 100,
-        bottom: 80,
-        left: 100
-      };
-      this.margin = _.extend(_margin, this.opts.margin);
-      delete this.opts.margin;
-      _defaultDimensions = {
-        height: window.innerHeight < 480 ? 500 : this.el.offsetHeight,
-        width: window.innerWidth < 480 ? 900 : this.el.offsetWidth
-      };
-      this.dimensions = _.extend(_defaultDimensions, this.opts.dimensions);
-      delete this.opts.dimensions;
-      this.innerWidth = this.dimensions.width - this.margin.left - this.margin.right;
-      this.innerHeight = this.dimensions.height - this.margin.top - this.margin.bottom;
-    }
-
-    Chart.prototype.render = function() {
-      this.createContainer();
-      return this.buildChart();
-    };
-
-    Chart.prototype._setColorScale = function(colors, data) {
-      var chartColors, colorScale, values;
-      chartColors = _.clone(colors);
-      if (data) {
-        if (_.isArray(data)) {
-          values = d3.values(data[0]);
-        }
-      }
-      if (this.opts.positions) {
-        _(this.opts.positions.length).times((function(_this) {
-          return function(index) {
-            if (!_(_this.opts.positions).contains(index)) {
-              return chartColors.splice(index, 1);
-            }
-          };
-        })(this));
-      }
-      colorScale = d3.scale.category20();
-      if (this.color != null) {
-        return this.colorAlt = colorScale;
-      } else {
-        return this.color = colorScale;
-      }
-    };
-
-    Chart.prototype.setTickFormat = function(axis) {
-      return axis.tickFormat((function(_this) {
-        return function(d) {
-          return _this.formatValues(d);
-        };
-      })(this));
-    };
-
-    Chart.prototype.formatValues = function(datum) {
-      var format, formatted, number;
-      number = d3.round(datum, 5);
-      format = d3.format(',s');
-      formatted = format(number);
-      if (formatted === '-0') {
-        formatted = '0';
-      }
-      return formatted;
-    };
-
-    Chart.prototype.displayNotice = function(heading, message) {
-      return this.el.innerHTML = "<div class=\"chart-notice\"> <h4 class=\"chart-notice-title\">" + heading + "</h4> <p class=\"chart-notice-content\">" + message + "</p></div>";
-    };
-
-    Chart.prototype.createContainer = function() {
-      var boxHeight, boxWidth;
-      boxHeight = this.dimensions.height + (this.title ? 40 : 0);
-      boxWidth = this.dimensions.width;
-      return this.svg = d3.select(this.el).append('svg').attr('width', this.dimensions.width).attr('height', this.dimensions.height + (this.title ? 40 : 0)).attr('viewBox', "0 0 " + boxWidth + " " + boxHeight).attr('perserveaspectratio', 'xMinYMid').append('g').attr('transform', "translate(" + this.margin.left + ", " + this.margin.top + ")");
-    };
-
-    Chart.prototype.getTitle = function() {
-      return this.title;
-    };
-
-    Chart.prototype._getLegendVerticalOffset = function(showLabels) {
-      var height, offset;
-      height = this.dimensions.height;
-      offset = this.margin.top;
-      if (this.opts.legendOffset) {
-        offset += this.opts.legendOffset;
-      } else {
-        if (showLabels) {
-          offset += 20;
-        } else {
-          offset = offset;
-        }
-      }
-      if (showLabels && !this.isLargeScreen) {
-        offset += this.smallScreenOffset;
-      }
-      return height - offset;
-    };
-
-    Chart.prototype.drawLegend = function(labels) {
-      var chartInnerWidth, chartWidth, left, primaryLabel, primaryLabelText, secondaryLabel, secondaryLabelText, top;
-      if (this.opts.showLegend !== false) {
-        if (this.opts.yLabel != null) {
-          primaryLabelText = this.opts.yLabel.split(',')[0];
-        } else {
-          primaryLabelText = this.opts.legendTitle;
-        }
-        if (this.opts.yLabelComparison != null) {
-          secondaryLabelText = _.str.strLeftBack(this.opts.yLabelComparison, ', ');
-        } else {
-          secondaryLabelText = null;
-        }
-        primaryLabel = primaryLabelText;
-        secondaryLabel = secondaryLabelText;
-        top = this._getLegendVerticalOffset(secondaryLabel != null);
-        left = secondaryLabel ? 20 : 0;
-        this.svg.append('g').attr('class', 'legend').attr('transform', "translate(" + left + ", " + top + ")").style('font-size', '12px').call(d3.legend);
-        if (secondaryLabel) {
-          chartWidth = this.dimensions.width;
-          chartInnerWidth = this.dimensions.width - this.margin.right - this.margin.left;
-          this.svg.selectAll('.legend-items').each(function() {
-            var self;
-            self = d3.select(this);
-            return self.append('text').text(primaryLabel).attr('transform', 'translate(-30, -20)').style('font-size', '10px').style('font-weight', 'bold');
-          });
-          return this.svg.selectAll('.legend-items-comparison').each(function() {
-            var outerWidth, self;
-            self = d3.select(this);
-            self.append('text').text(secondaryLabel).attr('transform', "translate(-30, -20)").style('font-size', '10px').style('font-weight', 'bold');
-            outerWidth = parseInt($('.legend-items-comparison').outerWidth(), 10);
-            left = chartInnerWidth - (chartInnerWidth / 2) + 20;
-            top = 0;
-            return self.attr('transform', "translate(" + left + ", " + top + ")");
-          });
-        }
-      }
-    };
-
-    Chart.prototype.drawTitle = function() {
-      return this.svg.append('text').attr('x', (this.dimensions.width - this.margin.left - this.margin.right) / 2).attr('y', 0 - (this.margin.top / 2)).attr('text-anchor', 'middle').attr('class', 'chart-title').text((function(_this) {
-        return function() {
-          var title;
-          title = _this.getTitle();
-          if (title) {
-            return title;
-          } else {
-            return null;
-          }
-        };
-      })(this));
-    };
-
-    Chart.prototype.utils = {
-      round2: function(num) {
-        num = parseFloat(num, 10);
-        +num.toFixed(2).replace(/\.00$/, '');
-        return num;
-      }
-    };
-
-    return Chart;
-
-  })();
+  })(D3Fakebook.Core);
 
   'use strict';
 
@@ -488,7 +485,7 @@
 
     return LineChart;
 
-  })(D3Fakebook.Chart);
+  })(D3Fakebook.Core);
 
   'use strict';
 
