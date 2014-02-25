@@ -8,8 +8,6 @@ define [
   window.d3 = d3
   window._  = _
 
-  console.log 'd3', d3
-
   expect  = chai.expect
   assert  = chai.assert
   objects =

@@ -267,32 +267,38 @@ class D3Fakebook.LineChart extends D3Fakebook.Chart
     d3.nest().key((d) -> d[primaryKey]).entries(datasets)
 
   buildData : ->
-    primaryKey = @opts.valueName
-    dateRegex = new RegExp /\d{4}/
-
     _.each @data, (data) ->
-      if data.data
-        _.map data.data, (d) ->
-          d[primaryKey] = data[primaryKey]
-
-      else if data.dataComparison
-        _.map data.dataComparison, (d) ->
-          d[primaryKey] = data[primaryKey]
-
-      else
-        _.map data, (v,k) ->
-          if k is 'date'
-            if dateRegex.test(v)
-              date = new Date v, 0, 1
-            else
-              date = new Date v
-
-            data[k] = date
-
-          else
-            data[k] = +v
+      _.map data, (v,k) ->
+        if k is 'date'
+          data[k] = new Date v
+        else
+          data[k] = +v
 
     parsedData           = @_nestData(@data, false)
     parsedDataComparison = @_nestData(@data, true, parsedData) if @opts.dualY
 
     [parsedData, parsedDataComparison]
+
+    #dataLabels         = _.compact(_.pluck(@data, 'country'))
+    #dataLabels         = _.compact(_.pluck(@data, 'name')) unless dataLabels
+    #datasets           = _.compact(_.flatten(_.pluck(@data, 'data')))
+    #datasetsComparison = _.compact(_.flatten(_.pluck(@data, 'dataComparison')))
+
+    #datasets = _.flatten(datasets)
+    #countries = _.uniq _.pluck(datasets, 'country')
+    #data = _.groupBy datasets, (data) ->
+      #data.country
+
+    #parseData = (datasets) ->
+      #data = undefined
+      #if datasets and datasets.length
+        #data = {}
+        #_(datasets).each (d) ->
+          #if data[d.country]
+            #data[d.country].push [d.xValue, d.yValue]
+          #else
+            #data[d.country] = [[d.xValue, d.yValue]]
+
+      #data
+
+    #[parseData(datasets), parseData(datasetsComparison)]

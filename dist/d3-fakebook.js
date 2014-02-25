@@ -21,6 +21,10 @@
       this.el = d3.select(el)[0][0];
       this.$el = d3.select(this.el);
       this.title = opts.title;
+      if (_.isUndefined(this.opts.showPoints)) {
+        this.opts.showPoints = true;
+      }
+      this.chartColors = this.opts.colors || ['#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#d62728', '#ff9896', '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5'];
       if (opts.indicatorTitle) {
         this.indicatorTitle = opts.indicatorTitle;
       }
@@ -91,6 +95,10 @@
         formatted = '0';
       }
       return formatted;
+    };
+
+    Chart.prototype.displayNotice = function(heading, message) {
+      return this.el.innerHTML = "<div class=\"chart-notice\"> <h4 class=\"chart-notice-title\">" + heading + "</h4> <p class=\"chart-notice-content\">" + message + "</p></div>";
     };
 
     Chart.prototype.createContainer = function() {
@@ -652,33 +660,15 @@
     };
 
     LineChart.prototype.buildData = function() {
-      var dateRegex, parsedData, parsedDataComparison, primaryKey;
-      primaryKey = this.opts.valueName;
-      dateRegex = new RegExp(/\d{4}/);
+      var parsedData, parsedDataComparison;
       _.each(this.data, function(data) {
-        if (data.data) {
-          return _.map(data.data, function(d) {
-            return d[primaryKey] = data[primaryKey];
-          });
-        } else if (data.dataComparison) {
-          return _.map(data.dataComparison, function(d) {
-            return d[primaryKey] = data[primaryKey];
-          });
-        } else {
-          return _.map(data, function(v, k) {
-            var date;
-            if (k === 'date') {
-              if (dateRegex.test(v)) {
-                date = new Date(v, 0, 1);
-              } else {
-                date = new Date(v);
-              }
-              return data[k] = date;
-            } else {
-              return data[k] = +v;
-            }
-          });
-        }
+        return _.map(data, function(v, k) {
+          if (k === 'date') {
+            return data[k] = new Date(v);
+          } else {
+            return data[k] = +v;
+          }
+        });
       });
       parsedData = this._nestData(this.data, false);
       if (this.opts.dualY) {
@@ -806,32 +796,34 @@
       }).style('stroke', function(d) {
         return color(d.key);
       }).style('stroke-dasharray', isComparison ? '5, 5' : null);
-      pointRadius = 5.2;
-      transitionDuration = 1000;
-      pointOpacity = 0.4;
-      pointsGroup = this.svg.append('g');
-      points = series.selectAll('.data-point').data(function(d) {
-        var filtered;
-        filtered = _.filter(d.values, function(v) {
-          return !_.isNaN(v.datum);
+      if (this.opts.showPoints) {
+        pointRadius = 5.2;
+        transitionDuration = 1000;
+        pointOpacity = 0.4;
+        pointsGroup = this.svg.append('g');
+        points = series.selectAll('.data-point').data(function(d) {
+          var filtered;
+          filtered = _.filter(d.values, function(v) {
+            return !_.isNaN(v.datum);
+          });
+          return filtered;
         });
-        return filtered;
-      });
-      points.enter().append('circle').attr('class', 'data-point').style('opacity', pointOpacity).attr('cx', function(d) {
-        return x(d.date);
-      }).attr('cy', function(d) {
-        return y(d.datum);
-      }).attr('r', function() {
-        return pointRadius;
-      }).attr('title', function(d) {
-        return "" + (d.date.getFullYear()) + " - " + d.datum;
-      }).style('fill', function(d, i) {
-        return color(d.country);
-      }).on('mouseover', function(d) {
-        return d3.select(this).transition().duration(250).style('opacity', 1);
-      }).on('mouseout', function(d) {
-        return d3.select(this).transition().duration(250).style('opacity', pointOpacity);
-      });
+        points.enter().append('circle').attr('class', 'data-point').style('opacity', pointOpacity).attr('cx', function(d) {
+          return x(d.date);
+        }).attr('cy', function(d) {
+          return y(d.datum);
+        }).attr('r', function() {
+          return pointRadius;
+        }).attr('title', function(d) {
+          return "" + (d.date.getFullYear()) + " - " + d.datum;
+        }).style('fill', function(d, i) {
+          return color(d.country);
+        }).on('mouseover', function(d) {
+          return d3.select(this).transition().duration(250).style('opacity', 1);
+        }).on('mouseout', function(d) {
+          return d3.select(this).transition().duration(250).style('opacity', pointOpacity);
+        });
+      }
       if (this.opts.labelLines === true && !this.opts.dualY) {
         translation = "translate(" + (x(d.value.date)) + ", " + (y(d.value.datum)) + ")";
         return series.append('text').datum(function(d) {
@@ -850,6 +842,7 @@
     TimeScaleLineChart.prototype._nestData = function(data, isComparison, primaryData) {
       var dataset, datasets, maxdate, mindate, primaryKey;
       isComparison || (isComparison = false);
+      primaryKey = this.opts.valueName;
       if (primaryData) {
         mindate = this.findMin(primaryData, 'date');
         mindate = new Date(mindate).getFullYear();
@@ -880,11 +873,58 @@
           });
         }
         return d3.nest().key(function(d) {
-          return d.country;
+          return d[primaryKey];
         }).entries(datasets);
       } else {
-        return null;
+        dataset = [];
+        _.each(data, function(d) {
+          var props;
+          props = {
+            datum: +d[primaryKey],
+            date: new Date(d.date)
+          };
+          return dataset.push(props);
+        });
+        return d3.nest().key(function(d) {
+          return d[primaryKey];
+        }).entries(dataset);
       }
+    };
+
+    TimeScaleLineChart.prototype.buildData = function() {
+      var dateRegex, parsedData, parsedDataComparison, primaryKey;
+      primaryKey = this.opts.valueName;
+      dateRegex = new RegExp(/\d{4}/);
+      _.each(this.data, function(data) {
+        if (data.data) {
+          return _.map(data.data, function(d) {
+            return d[primaryKey] = data[primaryKey];
+          });
+        } else if (data.dataComparison) {
+          return _.map(data.dataComparison, function(d) {
+            return d[primaryKey] = data[primaryKey];
+          });
+        } else {
+          return _.map(data, function(v, k) {
+            var date;
+            if (k === 'date') {
+              if (dateRegex.test(v)) {
+                date = new Date(v, 0, 1);
+              } else {
+                date = new Date(v);
+              }
+              return data[k] = date;
+            } else {
+              return data[k] = +v;
+            }
+          });
+        }
+      });
+      parsedData = this._nestData(this.data, false);
+      if (this.opts.dualY) {
+        parsedDataComparison = this._nestData(this.data, true, parsedData);
+      }
+      return [parsedData, parsedDataComparison];
     };
 
     return TimeScaleLineChart;

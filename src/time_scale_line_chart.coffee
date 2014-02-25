@@ -102,38 +102,39 @@ class D3Fakebook.TimeScaleLineChart extends D3Fakebook.LineChart
           .style('stroke-dasharray', if isComparison then ('5, 5') else null)
 
     # Data points
-    pointRadius = 5.2
-    transitionDuration = 1000
-    pointOpacity = 0.4
+    if @opts.showPoints
+      pointRadius = 5.2
+      transitionDuration = 1000
+      pointOpacity = 0.4
 
-    pointsGroup = @svg.append('g')
-    points = series.selectAll('.data-point').data (d) ->
-      filtered = _.filter(d.values, (v) -> not _.isNaN(v.datum))
-      filtered
+      pointsGroup = @svg.append('g')
+      points = series.selectAll('.data-point').data (d) ->
+        filtered = _.filter(d.values, (v) -> not _.isNaN(v.datum))
+        filtered
 
-    points.enter()
-          .append('circle')
-          .attr('class', 'data-point')
-          .style('opacity', pointOpacity)
-          .attr('cx', (d) -> x d.date)
-          .attr('cy', (d) -> y d.datum)
-          .attr('r', () -> pointRadius)
-          .attr('title', (d) ->
-            "#{d.date.getFullYear()} - #{d.datum}"
-          )
-          .style('fill', (d,i) -> color d.country)
-          .on('mouseover', (d) ->
-            d3.select(this)
-              .transition()
-              .duration(250)
-              .style('opacity', 1)
-          )
-          .on('mouseout', (d) ->
-            d3.select(this)
-              .transition()
-              .duration(250)
-              .style('opacity', pointOpacity)
-          )
+      points.enter()
+            .append('circle')
+            .attr('class', 'data-point')
+            .style('opacity', pointOpacity)
+            .attr('cx', (d) -> x d.date)
+            .attr('cy', (d) -> y d.datum)
+            .attr('r', () -> pointRadius)
+            .attr('title', (d) ->
+              "#{d.date.getFullYear()} - #{d.datum}"
+            )
+            .style('fill', (d,i) -> color d.country)
+            .on('mouseover', (d) ->
+              d3.select(this)
+                .transition()
+                .duration(250)
+                .style('opacity', 1)
+            )
+            .on('mouseout', (d) ->
+              d3.select(this)
+                .transition()
+                .duration(250)
+                .style('opacity', pointOpacity)
+            )
 
     # no line labeling for dual axis charts
     if @opts.labelLines is true and not @opts.dualY
@@ -149,6 +150,8 @@ class D3Fakebook.TimeScaleLineChart extends D3Fakebook.LineChart
 
   _nestData : (data, isComparison, primaryData) ->
     isComparison or= false
+    primaryKey = @opts.valueName
+
     if primaryData
       mindate = @findMin primaryData, 'date'
       mindate = new Date(mindate).getFullYear()
@@ -163,12 +166,10 @@ class D3Fakebook.TimeScaleLineChart extends D3Fakebook.LineChart
                 .value()
 
     if datasets? and datasets.length
-      #datasets = _.flatten(datasets)
       primaryKey = @opts.valueName
       datasets   = _.chain(datasets)
         .flatten()
         .map (d) ->
-
           dataAttrs =
             datum   : +d.value
             date    : new Date d.date, 0, 1
@@ -185,6 +186,44 @@ class D3Fakebook.TimeScaleLineChart extends D3Fakebook.LineChart
           date = new Date(d.date, 0, 1).getFullYear()
           date < mindate or date > maxdate
 
-      d3.nest().key((d) -> d.country).entries(datasets)
+      return d3.nest().key((d) -> d[primaryKey]).entries(datasets)
     else
-      return null
+      dataset = []
+      _.each data, (d) ->
+        props =
+          datum : +d[primaryKey]
+          date  : new Date d.date
+        dataset.push props
+
+      return d3.nest().key((d) -> d[primaryKey]).entries(dataset)
+
+  buildData : ->
+    primaryKey = @opts.valueName
+    dateRegex = new RegExp /\d{4}/
+
+    _.each @data, (data) ->
+      if data.data
+        _.map data.data, (d) ->
+          d[primaryKey] = data[primaryKey]
+
+      else if data.dataComparison
+        _.map data.dataComparison, (d) ->
+          d[primaryKey] = data[primaryKey]
+
+      else
+        _.map data, (v,k) ->
+          if k is 'date'
+            if dateRegex.test(v)
+              date = new Date v, 0, 1
+            else
+              date = new Date v
+
+            data[k] = date
+
+          else
+            data[k] = +v
+
+    parsedData           = @_nestData(@data, false)
+    parsedDataComparison = @_nestData(@data, true, parsedData) if @opts.dualY
+
+    [parsedData, parsedDataComparison]

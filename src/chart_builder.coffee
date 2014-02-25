@@ -16,6 +16,35 @@ class D3Fakebook.Chart
     @$el   = d3.select(@el)
     @title = opts.title
 
+    # Show data points on lines by default
+    if _.isUndefined @opts.showPoints
+      @opts.showPoints = true
+
+    @chartColors = @opts.colors or [
+      # The category20 colors:
+      # https://github.com/mbostock/d3/wiki/Ordinal-Scales#wiki-category20
+      '#1f77b4',
+      '#aec7e8',
+      '#ff7f0e',
+      '#ffbb78',
+      '#2ca02c',
+      '#98df8a',
+      '#d62728',
+      '#ff9896',
+      '#9467bd',
+      '#c5b0d5',
+      '#8c564b',
+      '#c49c94',
+      '#e377c2',
+      '#f7b6d2',
+      '#7f7f7f',
+      '#c7c7c7',
+      '#bcbd22',
+      '#dbdb8d',
+      '#17becf',
+      '#9edae5'
+    ]
+
     if opts.indicatorTitle
       @indicatorTitle = opts.indicatorTitle
 
@@ -86,7 +115,6 @@ class D3Fakebook.Chart
     else # create new this.color value
       @color = colorScale
 
-
   setTickFormat : (axis) ->
     axis.tickFormat (d) => @formatValues d
 
@@ -97,6 +125,11 @@ class D3Fakebook.Chart
     if formatted is '-0'
       formatted = '0'
     formatted
+
+  displayNotice : (heading, message) ->
+    @el.innerHTML = "<div class=\"chart-notice\">
+    <h4 class=\"chart-notice-title\">#{heading}</h4>
+    <p class=\"chart-notice-content\">#{message}</p></div>"
 
   createContainer : ->
     boxHeight = @dimensions.height + (if @title then 40 else 0)
