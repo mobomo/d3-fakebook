@@ -31,7 +31,7 @@ The production-ready files are stored in the [dist](./dist) directory.
 
 ## Dependencies
 
-This project depends on - but does not explicitly ship with - [D3](http://d3js.org) and [Underscore](http://underscorejs.org). If you follow the development instructions below, both of these libraries will be installed via Bower.
+This project depends on [D3](http://d3js.org) and [Underscore](http://underscorejs.org). Copies of each are included in the `dist` directory.
 
 ## Development
 
