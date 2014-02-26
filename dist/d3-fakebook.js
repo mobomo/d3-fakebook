@@ -1,7 +1,119 @@
 (function() {
-  'use strict';
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  window.D3Fakebook = {};
+
+  D3Fakebook.legend = function(g) {
+    g.each(function() {
+      var items, itemsComparison, legendPadding, li, li2, svg;
+      g = d3.select(this);
+      items = {};
+      itemsComparison = {};
+      svg = d3.select(g.property("nearestViewportElement"));
+      legendPadding = g.attr("data-style-padding") || 5;
+      li = g.selectAll(".legend-items").data([true]);
+      li.enter().append('g').attr('class', 'legend-items');
+      li.selectAll('g');
+      svg.selectAll("[data-legend]").each(function() {
+        var self;
+        self = d3.select(this);
+        return items[self.attr("data-legend")] = {
+          pos: self.attr("data-legend-pos") || this.getBBox().y,
+          color: self.attr("data-legend-color") !== void 0 ? self.attr("data-legend-color") : (self.style("fill") !== 'none' ? self.style("fill") : self.style("stroke"))
+        };
+      });
+      svg.selectAll("[data-legend-comparison]").each(function() {
+        var self;
+        self = d3.select(this);
+        return itemsComparison[self.attr("data-legend-comparison")] = {
+          pos: self.attr("data-legend-pos") || this.getBBox().y,
+          color: self.attr("data-legend-color") !== void 0 ? self.attr("data-legend-color") : (self.style("fill") !== 'none' ? self.style("fill") : self.style("stroke"))
+        };
+      });
+      items = d3.entries(items);
+      itemsComparison = d3.entries(itemsComparison);
+      if (itemsComparison.length) {
+        li2 = g.selectAll(".legend-items-comparison").data([true]);
+        li2.enter().append('g').attr('class', 'legend-items-comparison');
+        li2.selectAll('g').attr('class', 'legend-items-comparison');
+        li.selectAll("text").data(items, function(d) {
+          return d.key;
+        }).call(function(d) {
+          return d.enter().append("text");
+        }).call(function(d) {
+          return d.exit().remove();
+        }).attr("y", function(d, i) {
+          return (1.5 * i) + "em";
+        }).attr("x", "0em").text(function(d) {
+          return d.key;
+        });
+        li.selectAll("line").data(items, function(d) {
+          return d.key;
+        }).call(function(d) {
+          return d.enter().append("line");
+        }).call(function(d) {
+          return d.exit().remove();
+        }).attr("y1", function(d, i) {
+          return (1.5 * i) - 0.4 + "em";
+        }).attr("y2", function(d, i) {
+          return (1.5 * i) - 0.4 + "em";
+        }).attr("x1", -0.5 + "em").attr("x2", -2.0 + "em").style("stroke", function(d) {
+          return d.value.color;
+        }).style("stroke-width", "4");
+        li2.selectAll("text").data(itemsComparison, function(d) {
+          return d.key;
+        }).call(function(d) {
+          return d.enter().append("text");
+        }).call(function(d) {
+          return d.exit().remove();
+        }).attr("y", function(d, i) {
+          return (1.5 * i) + "em";
+        }).attr("x", "0em").text(function(d) {
+          return d.key;
+        });
+        return li2.selectAll("line").data(itemsComparison, function(d) {
+          return d.key;
+        }).call(function(d) {
+          return d.enter().append("line");
+        }).call(function(d) {
+          return d.exit().remove();
+        }).attr("y1", function(d, i) {
+          return (1.5 * i) - 0.4 + "em";
+        }).attr("y2", function(d, i) {
+          return (1.5 * i) - 0.4 + "em";
+        }).attr("x1", -0.5 + "em").attr("x2", -2.5 + "em").style("stroke", function(d) {
+          return d.value.color;
+        }).style("stroke-width", "4").style("stroke-dasharray", '5, 5');
+      } else {
+        li.selectAll("text").data(items, function(d) {
+          return d.key;
+        }).call(function(d) {
+          return d.enter().append("text");
+        }).call(function(d) {
+          return d.exit().remove();
+        }).attr("y", function(d, i) {
+          return (1.5 * i) + "em";
+        }).attr("x", "1em").text(function(d) {
+          return d.key;
+        });
+        return li.selectAll("circle").data(items, function(d) {
+          return d.key;
+        }).call(function(d) {
+          return d.enter().append("circle");
+        }).call(function(d) {
+          return d.exit().remove();
+        }).attr("cy", function(d, i) {
+          return (1.5 * i) - 0.4 + "em";
+        }).attr("cx", -0.4 + "em").attr("r", "0.4em").style("fill", function(d) {
+          return d.value.color;
+        });
+      }
+    });
+    return g;
+  };
+
+  'use strict';
 
   window.D3Fakebook || (window.D3Fakebook = {});
 
@@ -123,8 +235,6 @@
           offset -= 40;
         }
       }
-      console.log("height", height);
-      console.log("offset", offset);
       return height - offset;
     };
 
@@ -145,7 +255,6 @@
         secondaryLabel = secondaryLabelText;
         top = this._getLegendVerticalOffset(secondaryLabel != null);
         left = secondaryLabel ? 20 : 0;
-        console.log('top', top);
         this.svg.append('g').attr('class', 'legend').attr('transform', "translate(" + left + ", " + top + ")").style('font-size', '12px').call(D3Fakebook.legend);
         if (secondaryLabel) {
           chartWidth = this.dimensions.width;
@@ -402,117 +511,6 @@
     return BarChart;
 
   })(D3Fakebook.Core);
-
-  window.D3Fakebook = {};
-
-  D3Fakebook.legend = function(g) {
-    g.each(function() {
-      var items, itemsComparison, legendPadding, li, li2, svg;
-      g = d3.select(this);
-      items = {};
-      itemsComparison = {};
-      svg = d3.select(g.property("nearestViewportElement"));
-      legendPadding = g.attr("data-style-padding") || 5;
-      li = g.selectAll(".legend-items").data([true]);
-      li.enter().append('g').attr('class', 'legend-items');
-      li.selectAll('g');
-      svg.selectAll("[data-legend]").each(function() {
-        var self;
-        self = d3.select(this);
-        return items[self.attr("data-legend")] = {
-          pos: self.attr("data-legend-pos") || this.getBBox().y,
-          color: self.attr("data-legend-color") !== void 0 ? self.attr("data-legend-color") : (self.style("fill") !== 'none' ? self.style("fill") : self.style("stroke"))
-        };
-      });
-      svg.selectAll("[data-legend-comparison]").each(function() {
-        var self;
-        self = d3.select(this);
-        return itemsComparison[self.attr("data-legend-comparison")] = {
-          pos: self.attr("data-legend-pos") || this.getBBox().y,
-          color: self.attr("data-legend-color") !== void 0 ? self.attr("data-legend-color") : (self.style("fill") !== 'none' ? self.style("fill") : self.style("stroke"))
-        };
-      });
-      items = d3.entries(items);
-      itemsComparison = d3.entries(itemsComparison);
-      if (itemsComparison.length) {
-        li2 = g.selectAll(".legend-items-comparison").data([true]);
-        li2.enter().append('g').attr('class', 'legend-items-comparison');
-        li2.selectAll('g').attr('class', 'legend-items-comparison');
-        li.selectAll("text").data(items, function(d) {
-          return d.key;
-        }).call(function(d) {
-          return d.enter().append("text");
-        }).call(function(d) {
-          return d.exit().remove();
-        }).attr("y", function(d, i) {
-          return (1.5 * i) + "em";
-        }).attr("x", "0em").text(function(d) {
-          return d.key;
-        });
-        li.selectAll("line").data(items, function(d) {
-          return d.key;
-        }).call(function(d) {
-          return d.enter().append("line");
-        }).call(function(d) {
-          return d.exit().remove();
-        }).attr("y1", function(d, i) {
-          return (1.5 * i) - 0.4 + "em";
-        }).attr("y2", function(d, i) {
-          return (1.5 * i) - 0.4 + "em";
-        }).attr("x1", -0.5 + "em").attr("x2", -2.0 + "em").style("stroke", function(d) {
-          return d.value.color;
-        }).style("stroke-width", "4");
-        li2.selectAll("text").data(itemsComparison, function(d) {
-          return d.key;
-        }).call(function(d) {
-          return d.enter().append("text");
-        }).call(function(d) {
-          return d.exit().remove();
-        }).attr("y", function(d, i) {
-          return (1.5 * i) + "em";
-        }).attr("x", "0em").text(function(d) {
-          return d.key;
-        });
-        return li2.selectAll("line").data(itemsComparison, function(d) {
-          return d.key;
-        }).call(function(d) {
-          return d.enter().append("line");
-        }).call(function(d) {
-          return d.exit().remove();
-        }).attr("y1", function(d, i) {
-          return (1.5 * i) - 0.4 + "em";
-        }).attr("y2", function(d, i) {
-          return (1.5 * i) - 0.4 + "em";
-        }).attr("x1", -0.5 + "em").attr("x2", -2.5 + "em").style("stroke", function(d) {
-          return d.value.color;
-        }).style("stroke-width", "4").style("stroke-dasharray", '5, 5');
-      } else {
-        li.selectAll("text").data(items, function(d) {
-          return d.key;
-        }).call(function(d) {
-          return d.enter().append("text");
-        }).call(function(d) {
-          return d.exit().remove();
-        }).attr("y", function(d, i) {
-          return (1.5 * i) + "em";
-        }).attr("x", "1em").text(function(d) {
-          return d.key;
-        });
-        return li.selectAll("circle").data(items, function(d) {
-          return d.key;
-        }).call(function(d) {
-          return d.enter().append("circle");
-        }).call(function(d) {
-          return d.exit().remove();
-        }).attr("cy", function(d, i) {
-          return (1.5 * i) - 0.4 + "em";
-        }).attr("cx", -0.4 + "em").attr("r", "0.4em").style("fill", function(d) {
-          return d.value.color;
-        });
-      }
-    });
-    return g;
-  };
 
   'use strict';
 
