@@ -5,5 +5,5 @@ script: ./node_modles/.bin/karma start --single-run --browers PhantomJS
 
 before_script:
   - npm install
-  - npm install -g bower
+  - npm install -g bower coffee-script
   - bower install
