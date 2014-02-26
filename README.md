@@ -25,6 +25,10 @@ Basic usage:
       }
     });
 
+### Status Indicators
+
+[![Coverage Status](https://coveralls.io/repos/intridea/d3-fakebook/badge.png)](https://coveralls.io/r/intridea/d3-fakebook) ![Dependency Status from David-DM](https://david-dm.org/intridea/d3-fakebook.png)
+
 ## Build files
 
 The production-ready files are stored in the [dist](./dist) directory.
