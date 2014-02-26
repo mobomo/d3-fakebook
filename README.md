@@ -29,7 +29,15 @@ Basic usage:
 
 [![Build Status](https://travis-ci.org/intridea/d3-fakebook.png?branch=development)](https://travis-ci.org/intridea/d3-fakebook) [![Coverage Status](https://coveralls.io/repos/intridea/d3-fakebook/badge.png)](https://coveralls.io/r/intridea/d3-fakebook) ![Dependency Status from David-DM](https://david-dm.org/intridea/d3-fakebook.png)
 
-## Build files
+## Installation
+
+### Bower
+
+    $ bower install d3-fakebook
+
+This will install D3 Fakebook as well as both D3 and Underscore to a bower_components directory.
+
+### Build files
 
 The production-ready files are stored in the [dist](./dist) directory.
 
