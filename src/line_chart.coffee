@@ -172,7 +172,7 @@ class D3Fakebook.LineChart extends D3Fakebook.Core
     @drawAxes(data, comparison)
     @drawLines(data, @x, @y0, @color)
     @drawLines(comparison, @x, @y1, @colorAlt, true) if comparison
-    #@drawLegend()
+    @drawLegend()
     @drawTitle()
 
   drawAxes : (data, comparison) ->

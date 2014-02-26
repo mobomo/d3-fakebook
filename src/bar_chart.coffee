@@ -123,7 +123,7 @@ class D3Fakebook.BarChart extends D3Fakebook.Core
   drawChart : (data) ->
     @drawAxes()
     @drawBars(data)
-    #@drawLegend()
+    @drawLegend()
     @drawTitle()
 
   drawBars : (data) ->

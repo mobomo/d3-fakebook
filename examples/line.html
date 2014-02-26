@@ -50,7 +50,14 @@ d3.tsv('./data/aapl_stock.tsv', function(error, data) {
     var chart1 = new D3Fakebook.TimeScaleLineChart('#singleLine', {
       data : data,
       valueName : 'close',
-      showPoints : false
+      showPoints : false,
+      showLegend : false,
+      margin : {
+        top : 20,
+        right : 20,
+        bottom : 40,
+        left : 40
+      }
     });
     chart1.render();
   }
@@ -100,7 +107,14 @@ d3.json('./data/hours_worked_per_worker_and_economic_freedom.json', function(err
         var chart1 = new D3Fakebook.TimeScaleLineChart('#singleLine', {
           data : data,
           valueName : 'close',
-          showPoints : false
+          showPoints : false,
+          showLegend : false,
+          margin : {
+            top : 20,
+            right : 20,
+            bottom : 40,
+            left : 40
+          }
         });
         chart1.render();
       }

@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  window.D3Fakebook = {};
+  window.D3Fakebook || (window.D3Fakebook = {});
 
   D3Fakebook.Core = (function() {
     function Core(el, opts) {
@@ -31,7 +31,7 @@
       _margin = {
         top: 80,
         right: 100,
-        bottom: 80,
+        bottom: 120,
         left: 100
       };
       this.margin = _.extend(_margin, this.opts.margin);
@@ -113,24 +113,23 @@
     Core.prototype._getLegendVerticalOffset = function(showLabels) {
       var height, offset;
       height = this.dimensions.height;
-      offset = this.margin.top;
+      offset = this.margin.top + this.margin.bottom;
       if (this.opts.legendOffset) {
         offset += this.opts.legendOffset;
       } else {
         if (showLabels) {
-          offset += 20;
+          offset -= 60;
         } else {
-          offset = offset;
+          offset -= 40;
         }
       }
-      if (showLabels && !this.isLargeScreen) {
-        offset += this.smallScreenOffset;
-      }
+      console.log("height", height);
+      console.log("offset", offset);
       return height - offset;
     };
 
     Core.prototype.drawLegend = function(labels) {
-      var chartInnerWidth, chartWidth, left, primaryLabel, primaryLabelText, secondaryLabel, secondaryLabelText, top;
+      var chartInnerWidth, chartWidth, left, primaryLabel, primaryLabelText, secondaryLabel, secondaryLabelText, svg, top;
       if (this.opts.showLegend !== false) {
         if (this.opts.yLabel != null) {
           primaryLabelText = this.opts.yLabel.split(',')[0];
@@ -138,7 +137,7 @@
           primaryLabelText = this.opts.legendTitle;
         }
         if (this.opts.yLabelComparison != null) {
-          secondaryLabelText = _.str.strLeftBack(this.opts.yLabelComparison, ', ');
+          secondaryLabelText = this.opts.yLabelComparison;
         } else {
           secondaryLabelText = null;
         }
@@ -146,21 +145,24 @@
         secondaryLabel = secondaryLabelText;
         top = this._getLegendVerticalOffset(secondaryLabel != null);
         left = secondaryLabel ? 20 : 0;
-        this.svg.append('g').attr('class', 'legend').attr('transform', "translate(" + left + ", " + top + ")").style('font-size', '12px').call(d3.legend);
+        console.log('top', top);
+        this.svg.append('g').attr('class', 'legend').attr('transform', "translate(" + left + ", " + top + ")").style('font-size', '12px').call(D3Fakebook.legend);
         if (secondaryLabel) {
           chartWidth = this.dimensions.width;
           chartInnerWidth = this.dimensions.width - this.margin.right - this.margin.left;
-          this.svg.selectAll('.legend-items').each(function() {
+          svg = this.svg;
+          svg.selectAll('.legend-items').each(function() {
             var self;
             self = d3.select(this);
             return self.append('text').text(primaryLabel).attr('transform', 'translate(-30, -20)').style('font-size', '10px').style('font-weight', 'bold');
           });
-          return this.svg.selectAll('.legend-items-comparison').each(function() {
-            var outerWidth, self;
+          return svg.selectAll('.legend-items-comparison').each(function() {
+            var legendItems, legendItemsRect, self;
             self = d3.select(this);
             self.append('text').text(secondaryLabel).attr('transform', "translate(-30, -20)").style('font-size', '10px').style('font-weight', 'bold');
-            outerWidth = parseInt($('.legend-items-comparison').outerWidth(), 10);
-            left = chartInnerWidth - (chartInnerWidth / 2) + 20;
+            legendItems = svg.select('.legend-items')[0][0];
+            legendItemsRect = legendItems.getBoundingClientRect();
+            left = parseInt(legendItemsRect.width, 10) + 40;
             top = 0;
             return self.attr('transform', "translate(" + left + ", " + top + ")");
           });
@@ -328,6 +330,7 @@
     BarChart.prototype.drawChart = function(data) {
       this.drawAxes();
       this.drawBars(data);
+      this.drawLegend();
       return this.drawTitle();
     };
 
@@ -400,6 +403,117 @@
 
   })(D3Fakebook.Core);
 
+  window.D3Fakebook = {};
+
+  D3Fakebook.legend = function(g) {
+    g.each(function() {
+      var items, itemsComparison, legendPadding, li, li2, svg;
+      g = d3.select(this);
+      items = {};
+      itemsComparison = {};
+      svg = d3.select(g.property("nearestViewportElement"));
+      legendPadding = g.attr("data-style-padding") || 5;
+      li = g.selectAll(".legend-items").data([true]);
+      li.enter().append('g').attr('class', 'legend-items');
+      li.selectAll('g');
+      svg.selectAll("[data-legend]").each(function() {
+        var self;
+        self = d3.select(this);
+        return items[self.attr("data-legend")] = {
+          pos: self.attr("data-legend-pos") || this.getBBox().y,
+          color: self.attr("data-legend-color") !== void 0 ? self.attr("data-legend-color") : (self.style("fill") !== 'none' ? self.style("fill") : self.style("stroke"))
+        };
+      });
+      svg.selectAll("[data-legend-comparison]").each(function() {
+        var self;
+        self = d3.select(this);
+        return itemsComparison[self.attr("data-legend-comparison")] = {
+          pos: self.attr("data-legend-pos") || this.getBBox().y,
+          color: self.attr("data-legend-color") !== void 0 ? self.attr("data-legend-color") : (self.style("fill") !== 'none' ? self.style("fill") : self.style("stroke"))
+        };
+      });
+      items = d3.entries(items);
+      itemsComparison = d3.entries(itemsComparison);
+      if (itemsComparison.length) {
+        li2 = g.selectAll(".legend-items-comparison").data([true]);
+        li2.enter().append('g').attr('class', 'legend-items-comparison');
+        li2.selectAll('g').attr('class', 'legend-items-comparison');
+        li.selectAll("text").data(items, function(d) {
+          return d.key;
+        }).call(function(d) {
+          return d.enter().append("text");
+        }).call(function(d) {
+          return d.exit().remove();
+        }).attr("y", function(d, i) {
+          return (1.5 * i) + "em";
+        }).attr("x", "0em").text(function(d) {
+          return d.key;
+        });
+        li.selectAll("line").data(items, function(d) {
+          return d.key;
+        }).call(function(d) {
+          return d.enter().append("line");
+        }).call(function(d) {
+          return d.exit().remove();
+        }).attr("y1", function(d, i) {
+          return (1.5 * i) - 0.4 + "em";
+        }).attr("y2", function(d, i) {
+          return (1.5 * i) - 0.4 + "em";
+        }).attr("x1", -0.5 + "em").attr("x2", -2.0 + "em").style("stroke", function(d) {
+          return d.value.color;
+        }).style("stroke-width", "4");
+        li2.selectAll("text").data(itemsComparison, function(d) {
+          return d.key;
+        }).call(function(d) {
+          return d.enter().append("text");
+        }).call(function(d) {
+          return d.exit().remove();
+        }).attr("y", function(d, i) {
+          return (1.5 * i) + "em";
+        }).attr("x", "0em").text(function(d) {
+          return d.key;
+        });
+        return li2.selectAll("line").data(itemsComparison, function(d) {
+          return d.key;
+        }).call(function(d) {
+          return d.enter().append("line");
+        }).call(function(d) {
+          return d.exit().remove();
+        }).attr("y1", function(d, i) {
+          return (1.5 * i) - 0.4 + "em";
+        }).attr("y2", function(d, i) {
+          return (1.5 * i) - 0.4 + "em";
+        }).attr("x1", -0.5 + "em").attr("x2", -2.5 + "em").style("stroke", function(d) {
+          return d.value.color;
+        }).style("stroke-width", "4").style("stroke-dasharray", '5, 5');
+      } else {
+        li.selectAll("text").data(items, function(d) {
+          return d.key;
+        }).call(function(d) {
+          return d.enter().append("text");
+        }).call(function(d) {
+          return d.exit().remove();
+        }).attr("y", function(d, i) {
+          return (1.5 * i) + "em";
+        }).attr("x", "1em").text(function(d) {
+          return d.key;
+        });
+        return li.selectAll("circle").data(items, function(d) {
+          return d.key;
+        }).call(function(d) {
+          return d.enter().append("circle");
+        }).call(function(d) {
+          return d.exit().remove();
+        }).attr("cy", function(d, i) {
+          return (1.5 * i) - 0.4 + "em";
+        }).attr("cx", -0.4 + "em").attr("r", "0.4em").style("fill", function(d) {
+          return d.value.color;
+        });
+      }
+    });
+    return g;
+  };
+
   'use strict';
 
   D3Fakebook.LineChart = (function(_super) {
@@ -440,6 +554,7 @@
       if (comparison) {
         this.drawLines(comparison, this.x, this.y1, this.colorAlt, true);
       }
+      this.drawLegend();
       return this.drawTitle();
     };
 
@@ -569,8 +684,6 @@
       });
       return max;
     };
-
-    TimeScaleLineChart.prototype.drawLegend = function() {};
 
     TimeScaleLineChart.prototype.drawLines = function(dataset, x, y, color, isComparison) {
       var format, legendAttr, legendColorAttr, line, lines, pointOpacity, pointRadius, points, pointsGroup, series, transitionDuration, translation;
