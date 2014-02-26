@@ -27,7 +27,7 @@ Basic usage:
 
 ### Status Indicators
 
-[![Coverage Status](https://coveralls.io/repos/intridea/d3-fakebook/badge.png)](https://coveralls.io/r/intridea/d3-fakebook) ![Dependency Status from David-DM](https://david-dm.org/intridea/d3-fakebook.png)
+[![Build Status](https://travis-ci.org/intridea/d3-fakebook.png?branch=development)](https://travis-ci.org/intridea/d3-fakebook) [![Coverage Status](https://coveralls.io/repos/intridea/d3-fakebook/badge.png)](https://coveralls.io/r/intridea/d3-fakebook) ![Dependency Status from David-DM](https://david-dm.org/intridea/d3-fakebook.png)
 
 ## Build files
 
