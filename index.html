@@ -10,6 +10,15 @@
       font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
 
+    .small {
+      font-size: 14px;
+      color: #999;
+    }
+
+    .small strong {
+      color: #777;
+    }
+
     .wrapper {
       width: 98%;
       margin: 0 auto;
@@ -43,6 +52,7 @@
   <div class="wrapper">
     <h1>D3 Fakebook</h1>
     <h2>Line Chart Examples</h2>
+    <h3>Basic Line Chart</h3>
     <pre><code>// From the D3 Basic Line Chart example: http://bl.ocks.org/mbostock/3883245
 d3.tsv('examples/data/aapl_stock.tsv', function(error, data) {
   if (error) {
@@ -63,8 +73,11 @@ d3.tsv('examples/data/aapl_stock.tsv', function(error, data) {
     chart1.render();
   }
 });</code></pre>
+
     <div id="singleLine" class="chart"></div>
     <p>The date value should be either a string that can be translated in to <tt>Date</tt> object or a 4-digit year.</p>
+
+    <h3>Multivariate Series</h3>
     <pre><code>// Create chart with array of objects, pre-loaded on the page.
 var chart2 = new D3Fakebook.TimeScaleLineChart('#multiLine', {
   data : [
@@ -73,10 +86,14 @@ var chart2 = new D3Fakebook.TimeScaleLineChart('#multiLine', {
     {"country":"United Arab Emirates","data":[{"country":"United Arab Emirates","value":1.860001221,"date":1990},{"country":"United Arab Emirates","value":2.25,"date":1991},{"country":"United Arab Emirates","value":2.43,"date":1992},{"country":"United Arab Emirates","value":3.330002441,"date":1993},{"country":"United Arab Emirates","value":4.1,"date":1994},{"country":"United Arab Emirates","value":5.490004883,"date":1995},{"country":"United Arab Emirates","value":7.830004883,"date":1996},{"country":"United Arab Emirates","value":11.85000977,"date":1997},{"country":"United Arab Emirates","value":17.9,"date":1998},{"country":"United Arab Emirates","value":28.73001953,"date":1999},{"country":"United Arab Emirates","value":47.08003906,"date":2000},{"country":"United Arab Emirates","value":60.62003906,"date":2001},{"country":"United Arab Emirates","value":74.6,"date":2002},{"country":"United Arab Emirates","value":87.40007813,"date":2003},{"country":"United Arab Emirates","value":100.6900781,"date":2004},{"country":"United Arab Emirates","value":111.4200781,"date":2005},{"country":"United Arab Emirates","value":118.3700781,"date":2006},{"country":"United Arab Emirates","value":143.0300781,"date":2007},{"country":"United Arab Emirates","value":150.77,"date":2008},{"country":"United Arab Emirates","value":153.8,"date":2009},{"country":"United Arab Emirates","value":145.45,"date":2010}]},
     {"country":"Grenada","data":[{"country":"Grenada","value":0.160000153,"date":1990},{"country":"Grenada","value":0.150000076,"date":1991},{"country":"Grenada","value":0.190000153,"date":1992},{"country":"Grenada","value":0.29,"date":1993},{"country":"Grenada","value":0.350000305,"date":1994},{"country":"Grenada","value":0.400000305,"date":1995},{"country":"Grenada","value":0.57,"date":1996},{"country":"Grenada","value":0.97000061,"date":1997},{"country":"Grenada","value":1.390001221,"date":1998},{"country":"Grenada","value":1.990001221,"date":1999},{"country":"Grenada","value":4.240002441,"date":2000},{"country":"Grenada","value":6.300004883,"date":2001},{"country":"Grenada","value":7.410004883,"date":2002},{"country":"Grenada","value":41.38003906,"date":2003},{"country":"Grenada","value":42.28003906,"date":2004},{"country":"Grenada","value":45.61003906,"date":2005},{"country":"Grenada","value":44.83003906,"date":2006},{"country":"Grenada","value":49.71003906,"date":2007},{"country":"Grenada","value":57.87003906,"date":2008},{"country":"Grenada","value":109.9200781,"date":2009},{"country":"Grenada","value":116.7100781,"date":2010}]}
   ],
+  title : 'Cellular subscribers, per 100 people',
   valueName : 'country'
 });
 chart2.render();</code></pre>
     <div id="multiLine" class="chart"></div>
+    <p class="small"><strong>Data Source:</strong> IIF, <a href="http://iif.un.org/content/raw-data">http://iif.un.org/content/raw-data</a><!-- | <a href="humanprogress.org/f1/cellular-subscribers">View it on HumanProgress.org</a>--></p>
+
+    <h3>Dual Y-Axis, Multivariate Series</h3>
     <pre><code>// Dual-y-axis chart, with all the bells and whistles
 d3.json('examples/data/hours_worked_per_worker_and_economic_freedom.json', function(error, data) {
   if (error) {
@@ -94,13 +111,16 @@ d3.json('examples/data/hours_worked_per_worker_and_economic_freedom.json', funct
   }
 });</code></pre>
     <div id="dualDateLine" class="chart"></div>
+    <p class="small"><strong>Data Sources:</strong> Hours Worked: Conference Board, Total Economic Database, <a href="http://www.conference-board.org/data/economydatabase/">http://www.conference-board.org/data/economydatabase/</a>, Economic Freedom: Fraser Institute, <a href="http://www.freetheworld.com/">http://www.freetheworld.com/</a><!-- | <a href="http://humanprogress.org/f2/hours-worked-per-worker">View On HumanProgress.org</a>--></p>
     <h2>Bar Chart Examples</h2>
+    <h3>Multiple bars</h3>
 <pre><code>var multiBar = new D3Fakebook.BarChart('#multiBar', {
   data : [{"date":1950,"Argentina":308.29976619843194,"Australia":150.00564340528945,"Austria":358.7474395689033,"World":259.463896776797,"values":[{"name":"World","value":259.463896776797,"date":1950},{"name":"Argentina","value":308.29976619843194,"date":1950},{"name":"Australia","value":150.00564340528945,"date":1950},{"name":"Austria","value":358.7474395689033,"date":1950}]},{"date":2011,"Argentina":130.54065990171677,"Australia":36.07402936147343,"Austria":37.230623495289784,"World":96.63891279601752,"values":[{"name":"World","value":96.63891279601752,"date":2011},{"name":"Argentina","value":130.54065990171677,"date":2011},{"name":"Australia","value":36.07402936147343,"date":2011},{"name":"Austria","value":37.230623495289784,"date":2011}]}],
   yLabel : 'Hours worked per worker average annual'
 });
 multiBar.render();</code></pre>
     <div id="multiBar" class="chart"></div>
+    <p class="small"><strong>Data Source:</strong> Conference Board, Total Economic Database, <a href="http://www.conference-board.org/data/economydatabase/">http://www.conference-board.org/data/economydatabase/</a><!-- | <a href="http://humanprogress.org/f4/hours-worked-per-worker">View On HumanProgress.org</a>--></p>
   </div>
 
   <script src="dist/d3.min.js"></script>
@@ -137,6 +157,7 @@ multiBar.render();</code></pre>
         {"country":"United Arab Emirates","data":[{"country":"United Arab Emirates","value":1.860001221,"date":1990},{"country":"United Arab Emirates","value":2.25,"date":1991},{"country":"United Arab Emirates","value":2.43,"date":1992},{"country":"United Arab Emirates","value":3.330002441,"date":1993},{"country":"United Arab Emirates","value":4.1,"date":1994},{"country":"United Arab Emirates","value":5.490004883,"date":1995},{"country":"United Arab Emirates","value":7.830004883,"date":1996},{"country":"United Arab Emirates","value":11.85000977,"date":1997},{"country":"United Arab Emirates","value":17.9,"date":1998},{"country":"United Arab Emirates","value":28.73001953,"date":1999},{"country":"United Arab Emirates","value":47.08003906,"date":2000},{"country":"United Arab Emirates","value":60.62003906,"date":2001},{"country":"United Arab Emirates","value":74.6,"date":2002},{"country":"United Arab Emirates","value":87.40007813,"date":2003},{"country":"United Arab Emirates","value":100.6900781,"date":2004},{"country":"United Arab Emirates","value":111.4200781,"date":2005},{"country":"United Arab Emirates","value":118.3700781,"date":2006},{"country":"United Arab Emirates","value":143.0300781,"date":2007},{"country":"United Arab Emirates","value":150.77,"date":2008},{"country":"United Arab Emirates","value":153.8,"date":2009},{"country":"United Arab Emirates","value":145.45,"date":2010}]},
         {"country":"Grenada","data":[{"country":"Grenada","value":0.160000153,"date":1990},{"country":"Grenada","value":0.150000076,"date":1991},{"country":"Grenada","value":0.190000153,"date":1992},{"country":"Grenada","value":0.29,"date":1993},{"country":"Grenada","value":0.350000305,"date":1994},{"country":"Grenada","value":0.400000305,"date":1995},{"country":"Grenada","value":0.57,"date":1996},{"country":"Grenada","value":0.97000061,"date":1997},{"country":"Grenada","value":1.390001221,"date":1998},{"country":"Grenada","value":1.990001221,"date":1999},{"country":"Grenada","value":4.240002441,"date":2000},{"country":"Grenada","value":6.300004883,"date":2001},{"country":"Grenada","value":7.410004883,"date":2002},{"country":"Grenada","value":41.38003906,"date":2003},{"country":"Grenada","value":42.28003906,"date":2004},{"country":"Grenada","value":45.61003906,"date":2005},{"country":"Grenada","value":44.83003906,"date":2006},{"country":"Grenada","value":49.71003906,"date":2007},{"country":"Grenada","value":57.87003906,"date":2008},{"country":"Grenada","value":109.9200781,"date":2009},{"country":"Grenada","value":116.7100781,"date":2010}]}
       ],
+      title : 'Cellular subscribers, per 100 people',
       valueName : 'country'
     });
     chart2.render();
