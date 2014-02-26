@@ -1,6 +1,6 @@
 'use strict'
 
-window.D3Fakebook = {}
+window.D3Fakebook or= {}
 
 class D3Fakebook.Core
   constructor : (el, opts={}) ->
@@ -56,7 +56,7 @@ class D3Fakebook.Core
     _margin =
       top    : 80
       right  : 100
-      bottom : 80
+      bottom : 120
       left   : 100
 
     @margin = _.extend _margin, @opts.margin
@@ -146,24 +146,19 @@ class D3Fakebook.Core
 
   _getLegendVerticalOffset : (showLabels) ->
     height = @dimensions.height
-    offset = @margin.top
+    offset = @margin.top + @margin.bottom
 
     if @opts.legendOffset
       offset += @opts.legendOffset
     else
-      if showLabels
-        offset += 20
+      if showLabels # need some breathing room for the labels
+        offset -= 60
       else
-        offset = offset
-
-    offset += @smallScreenOffset if showLabels and not @isLargeScreen
+        offset -= 40
 
     height - offset
 
   drawLegend : (labels) ->
-    # the positioning of this is a bit of a hack, based on the premise that
-    # the container will always be 400px wide, which isn't always going to be
-    # true.
     unless @opts.showLegend is false
       if @opts.yLabel?
         primaryLabelText = @opts.yLabel.split(',')[0]
@@ -171,7 +166,7 @@ class D3Fakebook.Core
         primaryLabelText = @opts.legendTitle
 
       if @opts.yLabelComparison?
-        secondaryLabelText = _.str.strLeftBack @opts.yLabelComparison, ', '
+        secondaryLabelText = @opts.yLabelComparison
       else
         secondaryLabelText = null
 
@@ -185,13 +180,14 @@ class D3Fakebook.Core
         .attr('class', 'legend')
         .attr('transform', "translate(#{left}, #{top})")
         .style('font-size', '12px')
-        .call(d3.legend)
+        .call(D3Fakebook.legend)
 
       if secondaryLabel
         chartWidth = @dimensions.width
         chartInnerWidth = @dimensions.width - @margin.right - @margin.left
+        svg = @svg
 
-        @svg.selectAll('.legend-items').each ->
+        svg.selectAll('.legend-items').each ->
           self = d3.select this
           self.append('text')
             .text(primaryLabel)
@@ -199,7 +195,7 @@ class D3Fakebook.Core
             .style('font-size', '10px')
             .style('font-weight', 'bold')
 
-        @svg.selectAll('.legend-items-comparison').each ->
+        svg.selectAll('.legend-items-comparison').each ->
           self = d3.select this
           self.append('text')
             .text(secondaryLabel)
@@ -207,10 +203,11 @@ class D3Fakebook.Core
             .style('font-size', '10px')
             .style('font-weight', 'bold')
 
-          outerWidth = parseInt $('.legend-items-comparison').outerWidth(), 10
           # add some left margin
-          left       = chartInnerWidth - (chartInnerWidth / 2) + 20
-          top        = 0
+          legendItems     = svg.select('.legend-items')[0][0]
+          legendItemsRect = legendItems.getBoundingClientRect()
+          left            = parseInt(legendItemsRect.width, 10) + 40
+          top             = 0
 
           self.attr('transform', "translate(#{left}, #{top})")
 

@@ -65,9 +65,6 @@ class D3Fakebook.TimeScaleLineChart extends D3Fakebook.LineChart
 
     max
 
-  drawLegend : ->
-    # noop
-
   drawLines : (dataset, x, y, color, isComparison) ->
     isComparison ||= false
 
