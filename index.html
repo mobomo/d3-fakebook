@@ -41,7 +41,8 @@
 </head>
 <body>
   <div class="wrapper">
-    <h1>Line Chart Examples</h1>
+    <h1>D3 Fakebook</h1>
+    <h2>Line Chart Examples</h2>
     <pre><code>// From the D3 Basic Line Chart example: http://bl.ocks.org/mbostock/3883245
 d3.tsv('examples/data/aapl_stock.tsv', function(error, data) {
   if (error) {
@@ -93,11 +94,12 @@ d3.json('examples/data/hours_worked_per_worker_and_economic_freedom.json', funct
   }
 });</code></pre>
     <div id="dualDateLine" class="chart"></div>
+    <h2>Bar Chart Examples</h2>
 <pre><code>var multiBar = new D3Fakebook.BarChart('#multiBar', {
   data : [{"date":1950,"Argentina":308.29976619843194,"Australia":150.00564340528945,"Austria":358.7474395689033,"World":259.463896776797,"values":[{"name":"World","value":259.463896776797,"date":1950},{"name":"Argentina","value":308.29976619843194,"date":1950},{"name":"Australia","value":150.00564340528945,"date":1950},{"name":"Austria","value":358.7474395689033,"date":1950}]},{"date":2011,"Argentina":130.54065990171677,"Australia":36.07402936147343,"Austria":37.230623495289784,"World":96.63891279601752,"values":[{"name":"World","value":96.63891279601752,"date":2011},{"name":"Argentina","value":130.54065990171677,"date":2011},{"name":"Australia","value":36.07402936147343,"date":2011},{"name":"Austria","value":37.230623495289784,"date":2011}]}],
   yLabel : 'Hours worked per worker average annual'
-});</code></pre>
-    multiBar.render();
+});
+multiBar.render();</code></pre>
     <div id="multiBar" class="chart"></div>
   </div>
 

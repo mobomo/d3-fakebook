@@ -3,7 +3,7 @@
  */
 
 .chart {
-  height: 500px;
+  min-height: 500px;
 }
 
 /* Text
