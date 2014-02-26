@@ -29,9 +29,11 @@ Basic usage:
 
 The production-ready files are stored in the [dist](./dist) directory.
 
+Alternately, the coffeescript files in the [src](./src) directory can be added to your coffeescript project. However, keep in mind that ([currently](https://github.com/intridea/d3-fakebook/issues/10)) these aren't proper modules, and the specific chart-types are dependent on the [core](./src/core.coffee) file, which is in turn dependent on the [legend](./src/legend.coffee) file.
+
 ## Dependencies
 
-This project depends on [D3](http://d3js.org) and [Underscore](http://underscorejs.org). Copies of each are included in the `dist` directory.
+This project depends on [D3](http://d3js.org) (3.4.2 or newer) and [Underscore](http://underscorejs.org) ([Lo-Dash](http://lodash.com/) should also work, though it hasn't been tested). Copies of each are included in the `dist` directory.
 
 ## Development
 
