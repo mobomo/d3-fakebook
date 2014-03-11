@@ -24,10 +24,10 @@ Basic usage:
         chart.render();
       }
     });
+    
+## Styles
 
-### Status Indicators
-
-[![Build Status](https://travis-ci.org/intridea/d3-fakebook.png?branch=development)](https://travis-ci.org/intridea/d3-fakebook) [![Coverage Status](https://coveralls.io/repos/intridea/d3-fakebook/badge.png)](https://coveralls.io/r/intridea/d3-fakebook) ![Dependency Status from David-DM](https://david-dm.org/intridea/d3-fakebook.png)
+Until [this issue](https://github.com/intridea/d3-fakebook/issues/15) is resolved, it's recommended that you pull in the styles found in the [demo page CSS](https://github.com/intridea/d3-fakebook/blob/65ede2ff2830788f400b93bf3e4587011668285e/examples/d3-fakebook.css), which contains some very basic (but important) styles for the charts.
 
 ## Installation
 
