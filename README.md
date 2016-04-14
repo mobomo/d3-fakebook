@@ -1,6 +1,13 @@
 d3-fakebook
 ===========
 
+NOTICE
+======
+
+This project is no longer maintained. If you're interested in contributing (or possibly taking it over), please contact [the current maintainers](mailto:opensource@mobomo.com) and let them know.
+
+-----
+
 A useful collection of scripts to get you working with D3, quickly.
 
 Read the [docs](https://github.com/intridea/d3-fakebook/wiki) for more information on how to use the API.
